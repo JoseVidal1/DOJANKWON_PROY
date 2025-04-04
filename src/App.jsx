@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Sidebar from './page/sidebar'; // Cambia a mayúscula S
+import Sidebar from './Components/sidebar'; // Cambia a mayúscula S
 
 function App() {
   return (
