@@ -64,12 +64,12 @@ const Sidebar = () => {
 
         {/* Main*/}
         <nav className="px-2 space-y-1">
-          <Opcion icon={home} title="Inicio" />
-          <Opcion icon={user_icon} title="Usuarios" />
-          <Opcion icon={reports_icon} title="Reportes" />
-          <Opcion icon={product_icon} title="Productos" />
-          <Opcion icon={examen_icon} title="Examenes" />
-        </nav>
+          <Opcion icon={home} title="Inicio" to="/" />
+          <Opcion icon={user_icon} title="Usuarios" to="/usuarios" />
+          <Opcion icon={reports_icon} title="Reportes" to="/reportes" />
+          <Opcion icon={product_icon} title="Productos" to="/productos" />
+          <Opcion icon={examen_icon} title="Examenes" to="/examenes" />
+          </nav>
 
         <div className="mt-8 px-4">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2">
@@ -93,7 +93,7 @@ const Sidebar = () => {
 
       <div className="p-4 space-y-2">
         <div className="bg-gray-900 bg-opacity-30 p-3 rounded text-sm">
-          <div className="text-gray-300">03/04/2025</div>
+          <div className="text-gray-300">{new Date().toDateString()}</div>
           <div className="text-gray-500">Cesar, Colombia</div>
         </div>
       </div>

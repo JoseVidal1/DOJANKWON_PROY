@@ -1,11 +1,18 @@
-import React from 'react'
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-export default function Opcion({icon, title}) {
+export default function Opcion({ icon, title, to }) {
   return (
-    <a href="" className="flex items-center px-4 py-2 rounded hover:bg-gray-800 transition-colors">
-    <img src={icon} className="mr-3 w-4"/>
-    <span>{title}</span>
-   </a>
-  )
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center px-4 py-2 rounded transition-colors ${
+          isActive ? 'bg-gray-800 text-white' : 'hover:bg-gray-700'
+        }`
+      }
+    >
+      <img src={icon} className="mr-3 w-4" alt={title} />
+      <span>{title}</span>
+    </NavLink>
+  );
 }
-
