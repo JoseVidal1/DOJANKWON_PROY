@@ -4,6 +4,7 @@ import Sidebar from './Components/sidebar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion'; // Para animaciones suaves
 
+import Login from './page/Login';
 import Home from './page/Home';
 import Usuarios from './page/Usuarios';
 import Reportes from './page/Reportes';
@@ -13,12 +14,13 @@ import Examenes from './page/Examenes';
 function App() {
   return (
     <BrowserRouter>
+    <Login />
       <div className="flex">
         <Sidebar />
         <main className="flex-1 p-6 ml-64">
           <AnimatePresence mode="wait">
             <Routes>
-              <Route path="/" element={
+               <Route path="/" element={
                 <PageTransition>
                   <Home />
                 </PageTransition>
@@ -48,6 +50,7 @@ function App() {
         </main>
       </div>
     </BrowserRouter>
+    
   );
 }
 
