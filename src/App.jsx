@@ -15,7 +15,7 @@ function App() {
     <BrowserRouter>
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-6 ml-64">
+        <main className="flex-1 p-6 ml-60 lg:w-[77%]">
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={
