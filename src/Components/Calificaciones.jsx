@@ -53,8 +53,15 @@ export default function Calificaciones({ index,nombre, grado, calentamiento, tec
     if (puesto === 3) return '🥉'; // Bronce
     return puesto; // Si no es del 1 al 3, mostramos el número (puesto humano)
   };
+
+  const getBgColor = () => {
+    if (puesto === 1) return 'bg-amber-100';
+    if (puesto === 2) return 'bg-gray-100';
+    if (puesto === 3) return 'bg-orange-100';
+    return '';
+  };
   return (
-    <tr className="border-b ">
+    <tr className={`border-b transition-colors ${getBgColor()}`}>
       <td className="px-1  py-1  ">{nombre}</td>
       <td className="px-1  py-1  ">{grado}</td>
 

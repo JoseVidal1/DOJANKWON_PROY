@@ -7,7 +7,7 @@ export default function Opcion({ icon, title, to }) {
       to={to}
       className={({ isActive }) =>
         `flex items-center px-4 py-2 rounded transition-colors ${
-          isActive ? 'bg-gray-800 text-white' : 'hover:bg-gray-700'
+          isActive ? 'bg-gray-600 text-white' : 'hover:bg-gray-600'
         }`
       }
     >
