@@ -61,7 +61,7 @@ export default function Calificaciones({ index,nombre, grado, calentamiento, tec
     return '';
   };
   return (
-    <tr className={`border-b transition-colors ${getBgColor()}`}>
+    <tr className={`border-b transition-colors hover:bg-gray-100 ${getBgColor()}`}>
       <td className="px-1  py-1  ">{nombre}</td>
       <td className="px-1  py-1  ">{grado}</td>
 

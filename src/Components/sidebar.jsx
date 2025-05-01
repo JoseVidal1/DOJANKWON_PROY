@@ -19,6 +19,10 @@ const Sidebar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const toggleSidebar = () => {
+    setIsMobile(!isMobile);
+  };
+
   const MobileIcon = ({ icon, to, alt }) => (
     <Link to={to} className="block w-full">
       <div className="flex justify-center py-3 cursor-pointer hover:bg-gray-800 rounded-md">
@@ -26,37 +30,59 @@ const Sidebar = () => {
       </div>
     </Link>
   );
+
   return (
     <>
       <aside className={`flex flex-col justify-between min-h-screen h-full bg-[#171716] border-r border-gray-800 text-gray-300 fixed inset-y-0 left-0 transition-all duration-300 ease-in-out ${isMobile ? 'w-14' : 'w-64'}`}>
         <div>
-          <div className="p-4 mb-4 flex items-center">
-            <img src={imagen} alt="Profile" className={`${isMobile ? 'w-8 h-8' : 'w-12 h-12'} rounded-full ${isMobile ? 'mx-auto' : 'mr-3'}`} />
-            {!isMobile && (
-              <div className="flex flex-col">
-                <div className="text-white-400 font-medium hover:text-blue-300 cursor-pointer transition-colors">Alvaro V.</div>
-                <div className="text-sm text-gray-400">Administrator</div>
-              </div>
-            )}
+          <div className="p-4 mb-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <img src={imagen} alt="Profile" className={`${isMobile ? 'w-8 h-8' : 'w-12 h-12'} rounded-full ${isMobile ? 'mx-auto' : 'mr-3'}`} />
+              {!isMobile && (
+                <div className="flex flex-col">
+                  <div className="text-white-400 font-medium hover:text-blue-300 cursor-pointer transition-colors">Alvaro V.</div>
+                  <div className="text-sm text-gray-400">Administrator</div>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={toggleSidebar}
+              className="text-gray-300 hover:text-white focus:outline-none"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </button>
           </div>
           <nav className={`${isMobile ? 'px-1' : 'px-2'} space-y-1`}>
             {!isMobile ? (
               <>
                 <Opcion icon={home} title="Inicio" to="/" />
-                  <Opcion icon={user_icon} title="Usuarios" to="/usuarios" />
-                 <Opcion icon={reports_icon} title="Reportes" to="/reportes" />
-                  <Opcion icon={product_icon} title="Productos" to="/productos" />
-                  <Opcion icon={examen_icon} title="Examenes" to="/examenes" />
-                  <Opcion icon={Estudiantes_icon} title="Estudiantes" to="/Estudiantes" />
+                <Opcion icon={user_icon} title="Usuarios" to="/usuarios" />
+                <Opcion icon={reports_icon} title="Reportes" to="/reportes" />
+                <Opcion icon={product_icon} title="Productos" to="/productos" />
+                <Opcion icon={examen_icon} title="Examenes" to="/examenes" />
+                <Opcion icon={Estudiantes_icon} title="Estudiantes" to="/Estudiantes" />
               </>
             ) : (
               <>
                 <MobileIcon icon={home} to="/" alt="Inicio" />
-                 <MobileIcon icon={user_icon} to="/usuarios" alt="Usuarios" />
-                  <MobileIcon icon={reports_icon} to="/reportes" alt="Reportes" />
-                   <MobileIcon icon={product_icon} to="/productos" alt="Productos" />
-                    <MobileIcon icon={examen_icon} to="/examenes" alt="Examenes" />
-                    <MobileIcon icon={Estudiantes_icon} to="/Estudiantes" alt="Estudiantes" />
+                <MobileIcon icon={user_icon} to="/usuarios" alt="Usuarios" />
+                <MobileIcon icon={reports_icon} to="/reportes" alt="Reportes" />
+                <MobileIcon icon={product_icon} to="/productos" alt="Productos" />
+                <MobileIcon icon={examen_icon} to="/examenes" alt="Examenes" />
+                <MobileIcon icon={Estudiantes_icon} to="/Estudiantes" alt="Estudiantes" />
               </>
             )}
           </nav>
