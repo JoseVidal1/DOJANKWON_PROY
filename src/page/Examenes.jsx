@@ -51,7 +51,7 @@ const Examenes = () => {
         </select>
       </div>
       
-      <div className="overflow-x-auto">
+      <div className="lg:overflow-x-auto sm:overflow-x-scroll">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-100 text-gray-700">

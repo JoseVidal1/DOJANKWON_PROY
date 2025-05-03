@@ -24,9 +24,14 @@ const Sidebar = () => {
   };
 
   const MobileIcon = ({ icon, to, alt }) => (
-    <Link to={to} className="block w-full">
-      <div className="flex justify-center py-3 cursor-pointer hover:bg-gray-800 rounded-md">
+    <Link to={to} className="block w-full group relative">
+      <div className="flex justify-center py-3 cursor-pointer hover:bg-gray-800 rounded-md relative">
         <img src={icon} alt={alt} className="w-6 h-6" />
+        
+        {/* Texto flotante */}
+        <span className="absolute left-full top-1/2 transform -translate-y-1/2 ml-3 bg-gray-700 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition">
+          {alt}
+        </span>
       </div>
     </Link>
   );
@@ -90,7 +95,7 @@ const Sidebar = () => {
             {!isMobile && (
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2">OTRAS CONFIG</h3>
             )}
-            <button className={`flex items-center ${isMobile ? 'justify-center w-full' : 'space-x-2 px-2'} py-2 rounded-md transition-colors duration-200 hover:bg-transparent group`}>
+            <button className={`flex items-center ${isMobile ? 'justify-center w-full' : 'space-x-2 px-2'} py-2 rounded-md transition-colors duration-200  group hover:cursor-pointer`}>
               <svg className="w-5 h-5 text-gray-300 group-hover:text-red-500 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24" 
               xmlns="http://www.w3.org/2000/svg">
                 <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
@@ -104,7 +109,7 @@ const Sidebar = () => {
         <div className={`${isMobile ? 'p-2' : 'p-4'} space-y-2`}>
           {!isMobile ? (
             <div className="bg-[#171716] shadow-sm bg-opacity-30 p-3 rounded text-sm">
-              <div className="text-gray-300">{new Date().toDateString()}</div>
+             <div className="text-gray-300">{new Date().toLocaleDateString('es-ES')}</div>
               <div className="text-gray-500">Cesar, Colombia</div>
             </div>
           ) : (
