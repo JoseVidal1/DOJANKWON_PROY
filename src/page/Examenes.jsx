@@ -34,7 +34,7 @@ const Examenes = () => {
   const estudiantesOrdenados = [...estudiantesConNotas].sort((a, b) => b.notaFinal - a.notaFinal);
   
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6">
+    <div className="p-5 rounded-[30px] shadow-[10px_10px_20px_#bebebe,-10px_-10px_20px_#ffffff] bg-gray-100 text-[#333]">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Exámenes</h1>

@@ -1,108 +1,153 @@
 import React, { useState } from 'react';
+import TablaResponsiva from '../Components/TablaResponsivaEs';
 import ModalEE from '../Components/ModalEE'; 
 import AgregarEstudiante from '../Components/AgregarEstudiante';
 import Estudiante from '../Components/Estudiante';
-const Estudiantes = () => {
- const [estudiantes, setEstudiantes] = useState([
-    { id: 1, nombre: 'Juan', apellido: 'Pérez', edad: "02-10-2005", eps: 'EPS1', direccion: 'Calle 1', telefono: '1234567890', correo: 'jjshjs@jsjsjs' },
-    /*{ id: 2, nombre: 'María', apellido: 'Gómez', edad: 22, eps: 'EPS2', direccion: 'Calle 2', telefono: '0987654321', correo: ',' },
-    { id: 3, nombre: 'Pedro', apellido: 'López', edad: 21, eps: 'EPS3', direccion: 'Calle 3', telefono: '1122334455', correo: ',' },*/
+
+export default function TablaEstudiantes() {
+  const [estudiantes, setEstudiantes] = useState([
+    {
+      id: "1001",
+      nombre: "Juan",
+      apellido: "Pérez",
+      edad: "2000-05-15", 
+      eps: "Sura",
+      direccion: "Calle 123",
+      telefono: "3001234567",
+      correo: "juan@ejemplo.com"
+    },
+    {
+      id: "1002",
+      nombre: "María",
+      apellido: "González",
+      edad: "2005-10-20",
+      eps: "Nueva EPS",
+      direccion: "Carrera 45",
+      telefono: "3107654321",
+      correo: "maria@ejemplo.com"
+    }
   ]);
-  const [isModalEliminar, setIsModalEliminar] = useState(false);
+
   const [isModalEditar, setIsModalEditar] = useState(false);
+  const [isModalEliminar, setIsModalEliminar] = useState(false);
+  const [isModalAgregar, setIsModalAgregar] = useState(false);
   const [estudianteAEditar, setEstudianteAEditar] = useState(null);
   const [estudianteAEliminar, setEstudianteAEliminar] = useState(null);
-  const [isModalAgregar, setIsModalAgregar] = useState(false);
 
-  function EditarEstudiante(estudiante) {
-    const nuevosEstudiantes = estudiantes.map((est) => {
-      if (est.id === estudiante.id) {
-        return {...estudiante};
+  const columnasEstudiantes = [
+    { id: 'id', header: 'CC' },
+    { id: 'nombre', header: 'Nombres' },
+    { id: 'apellido', header: 'Apellidos' },
+    { 
+      id: 'edad', 
+      header: 'Edad',
+      render: (estudiante) => {
+        const fechaActual = new Date();
+        const fechaNacimiento = new Date(estudiante.edad);
+        let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+        const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
+        if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())) {
+          edad--;
+        }
+        if (edad < 0) {
+          edad = 0; 
+        }
+        return edad;
       }
-      return est;
-    });
-    setEstudiantes(nuevosEstudiantes);
-    console.log(nuevosEstudiantes);
-  }
-  function EliminarEstudiante(id) {
-    const nuevoEstudiantes = estudiantes.filter((estudiante) => estudiante.id !== id);
-    setEstudiantes(nuevoEstudiantes);
-  }
+    },
+    { id: 'eps', header: 'EPS' },
+    { id: 'direccion', header: 'Dirección' },
+    { id: 'telefono', header: 'Teléfono' },
+    { id: 'correo', header: 'Correo' }
+  ];
+
+  // Manejar edición
+  const handleEditar = (estudiante) => {
+    setEstudianteAEditar(estudiante);
+    setIsModalEditar(true);
+  };
+
+  // Manejar eliminación
+  const handleEliminar = (estudiante) => {
+    setEstudianteAEliminar(estudiante);
+    setIsModalEliminar(true);
+  };
+
+  // Confirmar edición
+  const confirmarEditar = () => {
+    if (estudianteAEditar) {
+      setEstudiantes(estudiantes.map(est => 
+        est.id === estudianteAEditar.id ? estudianteAEditar : est
+      ));
+      setIsModalEditar(false);
+    }
+  };
+
+  // Confirmar eliminación
+  const confirmarEliminar = () => {
+    if (estudianteAEliminar) {
+      setEstudiantes(estudiantes.filter(est => est.id !== estudianteAEliminar.id));
+      setIsModalEliminar(false);
+    }
+  };
+
+  // Manejar agregar estudiante
+  const handleAgregarEstudiante = (nuevoEstudiante) => {
+    setEstudiantes([...estudiantes, nuevoEstudiante]);
+  };
+
+  // Guardar cambios de campos
+  const handleGuardarCambio = (id, campo, valor) => {
+    setEstudiantes(prev => prev.map(est =>
+      est.id === id ? { ...est, [campo]: valor } : est
+    ));
+  };
 
   return (
-    <>
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-4">Estudiantes</h1>
-        <p className="text-gray-600">Bienvenido al panel de Estudiantes.</p>
-        
-        <div className="overflow-x-auto mt-4">
-          <button className='p-2 rounded-2xl bg-blue-600 text-blue-50 hover:cursor-pointer hover:bg-blue-400' onClick={() => {
-                        setIsModalAgregar(true);
-                      }}>Agregar Estudiante</button>
-          <table className="border-2 border-black-300 rounded-lg shadow-md mt-4 w-full table-fixed  border-collapse">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className='p-2'>ID</th>
-                <th className='p-2'>Nombre</th>
-                <th className='p-2'>Apellido</th>
-                <th className='p-2'>Edad</th>
-                <th className='p-2'>EPS</th>
-                <th className='p-2'>Dirección</th>
-                <th className='p-2'>Teléfono</th>
-                <th className='p-2'>Correo</th>
-                <th className='p-2'>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {estudiantes.map((estudiante) => (
-                <Estudiante
-                  key={estudiante.id}
-                  estudiante={estudiante}
-                  setEstudianteAEliminar={setEstudianteAEliminar}
-                  setIsModalEliminar={setIsModalEliminar}
-                  setEstudianteAEditar={setEstudianteAEditar}
-                  setIsModalEditar={setIsModalEditar}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {/* ModalAgregarEstudiante */}
-        <AgregarEstudiante
-          isOpen={isModalAgregar}
-          onClose={() => setIsModalAgregar(false)}
-          onAdd={(nuevoEstudiante) => {
-            setEstudiantes([...estudiantes, nuevoEstudiante]);
-            setIsModalAgregar(false);
-          }}/>
-        {/* ModalEliminar */}
-        <ModalEE
-          isOpen={isModalEliminar}
-          onClose={() => setIsModalEliminar(false)}
-          objeto={estudianteAEliminar ? `${estudianteAEliminar.nombre} ${estudianteAEliminar.apellido}` : ''}
-          onAccion={() => {
-            if (estudianteAEliminar) {
-              EliminarEstudiante(estudianteAEliminar.id);
-              setIsModalEliminar(false);
-            }
-          }}
-          accion="eliminar"
-        />
-          <ModalEE
-          isOpen={isModalEditar}
-          onClose={() => setIsModalEditar(false)}
-          objeto={estudianteAEditar ? `${estudianteAEditar.nombre} ${estudianteAEditar.apellido}` : ''}
-          onAccion={() => {
-            if (estudianteAEditar) {
-              EditarEstudiante(estudianteAEditar);
-              setIsModalEditar(false);
-            }
-          }}
-          accion="editar"
-          />
+    <div className="container mx-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Gestión de Estudiantes</h1>
+        <button 
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          onClick={() => setIsModalAgregar(true)}
+        >
+          Agregar Nuevo
+        </button>
       </div>
-    </>
-  );
-};
 
-export default Estudiantes;
+      <TablaResponsiva
+        columnas={columnasEstudiantes}
+        datos={estudiantes}
+        onEditar={handleEditar}
+        onEliminar={handleEliminar}
+        titulo="Estudiantes"
+        onGuardarCambio={handleGuardarCambio}
+      />
+
+      {/* Modal para editar estudiante */}
+      <ModalEE
+        isOpen={isModalEditar}
+        onClose={() => setIsModalEditar(false)}
+        objeto={estudianteAEditar ? `${estudianteAEditar.nombre} ${estudianteAEditar.apellido}` : ''}
+        onAccion={confirmarEditar}
+        accion="editar"
+      />
+
+      {/* Modal para eliminar estudiante */}
+      <ModalEE
+        isOpen={isModalEliminar}
+        onClose={() => setIsModalEliminar(false)}
+        objeto={estudianteAEliminar ? `${estudianteAEliminar.nombre} ${estudianteAEliminar.apellido}` : ''}
+        onAccion={confirmarEliminar}
+        accion="eliminar"
+      />
+
+      {/* Modal para agregar estudiante */}
+      <AgregarEstudiante
+        isOpen={isModalAgregar}
+        onClose={() => setIsModalAgregar(false)}
+        onAdd={handleAgregarEstudiante}
+      />
+    </div>
+  );
+}
