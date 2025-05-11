@@ -1,8 +1,50 @@
-#root {
+/*Colores Primarios*/
+#root { 
   width: 100%;
   min-height: 100vh;
+
+  /*colores con switch 1*/
+  --input-border-color: #c8d4f8de;
+  --primary-background-color: #fff;
+  --secundary-background-color: #f7f7f7;
+
+  --custom-border-color:#c4c4c4;
+
+  --primary-text-color: #000;
+  --secundary-text-color: #4b4c53;
+
+  --primary-border-color: #4b4c53;
+
+  --button-solid-background-color: #000;
+  --button-solid-text-color: #fff;
+
+  --button-outline-background-color: #transparent;
+  --button-outline-text-color: #000;
+
+  --sidebar-hover-bg: #f0f0f0;
+  --sidebar-active-bg: #e0e7ffde;
+  --sidebar-active-text: #1e3a8a;
+
+  /*Tabla hover  e0e7ff*/
+   --table-hover-bg: #e0e7ff;
+
+
+
+  /*Colores con switch 2*/
+  --primary-dark-color: #111117;
 }
 
+html, body, #root {
+  height: 100%;
+}
+
+/*Font*/
+@font-face {
+  font-family: 'Josefin Sans';
+  src: url('/src/assets/fonts/JosefinSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 700;
+  font-style: normal;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -38,3 +80,4 @@
 .read-the-docs {
   color: #888;
 }
+

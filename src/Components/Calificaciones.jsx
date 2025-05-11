@@ -58,64 +58,71 @@ export default function Calificaciones({ index,nombre, grado, calentamiento, tec
     if (puesto === 1) return 'bg-amber-100';
     if (puesto === 2) return 'bg-gray-100';
     if (puesto === 3) return 'bg-orange-100';
+    if (puesto !== 1 && puesto !== 2 && puesto !== 3) return 'bg-white';
     return '';
   };
   return (
-    <tr className={`border-b transition-colors hover:bg-gray-100 ${getBgColor()}`}>
+    <tr className={`border-b transition-colors ${getBgColor()}`} style={{cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--table-hover-bg)"} onMouseLeave={e => e.currentTarget.style.backgroundColor = ""}>
       <td className="px-1  py-1  ">{nombre}</td>
       <td className="px-1  py-1  ">{grado}</td>
 
-      <td className='px-1  py-1 '>
+      <td className='px-1  py-1  '>
         <input
-          className='text-center   w-20 border rounded-md'
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaCalentamiento}
           onChange={e => setNotaCalentamiento(validarNota10(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1 '>
         <input
-          className='text-center w-20 border   rounded-md'
+         className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaMano}
           onChange={e => setNotaMano(validarNota20(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1  '>
         <input
-          className='text-center w-20 border   rounded-md'
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaPatada}
           onChange={e => setNotaPatada(validarNota20(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1  '>
         <input
-          className='text-center w-20 border rounded-md  '
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaEspecial}
           onChange={e => setNotaEspecial(validarNota10(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1 '>
         <input
-          className='text-center w-20 border rounded-md  '
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaCombate}
           onChange={e => setNotaCombate(validarNota20(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1 '>
         <input
-          className='text-center w-20 border rounded-md  '
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaRompimiento}
           onChange={e => setNotaRompimiento(validarNota10(e.target.value))}
         />
       </td>
+      
       <td className='px-1  py-1 '>
         <input
-          className='text-center w-20 border rounded-md  '
+          className='text-center w-20 border-2 border-transparent rounded-md focus:outline-none focus:border-[var(--input-border-color)]'
           type="number"
           value={notaTeorica}
           onChange={e => setNotaTeorica(validarNota10(e.target.value))}

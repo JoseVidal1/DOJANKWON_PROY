@@ -34,62 +34,61 @@ const Examenes = () => {
   const estudiantesOrdenados = [...estudiantesConNotas].sort((a, b) => b.notaFinal - a.notaFinal);
   
   return (
-    <div className="p-5 rounded-[30px] shadow-[10px_10px_20px_#bebebe,-10px_-10px_20px_#ffffff] bg-gray-100 text-[#333]">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Exámenes</h1>
-          <p className="text-gray-500 mt-1">Gestión de exámenes y evaluaciones</p>
-        </div>
-        <select 
-          onChange={e => filtroGrupo(e.target.value)} 
-          className="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        > 
-          <option value="">Todos los grupos</option>
-          <option value="niños">Grupo 5pm-6pm</option>
-          <option value="mayores">Grupo 6pm-7pm</option>
-          <option value="clase3">Grupo 7pm-8pm</option>
-        </select>
+  <div className="p-5 rounded-[30px] shadow-[10px_10px_20px_#bebebe,-10px_-10px_20px_#ffffff]" style={{ backgroundColor: "var(--secundary-background-color)", color: "var(--primary-text-color)"}}>
+    <div className="flex justify-between items-center mb-6">
+      <div>
+        <h1 className="text-3xl font-bold" style={{ color: "var(--primary-text-color)" }}>Exámenes</h1>
+        <p className="text-gray-500 mt-1" style={{ color: "var(--secundary-text-color)" }}> Gestión de exámenes y evaluaciones</p>
       </div>
-      
-      <div className="lg:overflow-x-auto sm:overflow-x-scroll">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th className="px-3 py-3 text-left font-medium">Nombre</th>
-              <th className="px-3 py-3 text-left font-medium">Grado</th>
-              <th className="px-3 py-3 text-center font-medium">Calent.<br/>(10pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Tec.Mano<br/>(20pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Tec.Patada<br/>(20pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Tec.Especial<br/>(10pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Combate<br/>(20pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Rompimiento<br/>(10pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Teórica<br/>(10pts)</th>
-              <th className="px-3 py-3 text-center font-medium">Nota<br/>Final</th>
-              <th className="px-3 py-3 text-center font-medium">Puesto</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {estudiantesOrdenados.map((est, orden) => (
-              <Calificaciones
-                key={est.index}
-                index={est.index}
-                nombre={est.nombre}
-                grado={est.grado}
-                calentamiento={est.calentamiento}
-                tec_mano={est.tec_mano}
-                tec_patada={est.tec_patada}
-                tec_especial={est.tec_especial}
-                combate={est.combate}
-                rompimiento={est.rompimiento}
-                teorica={est.teorica}
-                onNotaFinalChange={handleNotaChange}
-                puesto={orden + 1}
-              />
-            ))}  
-          </tbody>
-        </table>
-      </div>
+    
+    <select onChange={e => filtroGrupo(e.target.value)} className="rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2" style={{ backgroundColor: "var(--primary-background-color)", border: "1px solid var(--custom-border-color)", color: "var(--primary-text-color)", outlineColor: "var(--sidebar-active-text)"}}>
+      <option value="">Todos los grupos</option>
+      <option value="niños">Grupo 5pm-6pm</option>
+      <option value="mayores">Grupo 6pm-7pm</option>
+      <option value="clase3">Grupo 7pm-8pm</option>
+    </select>
     </div>
+
+  <div className="overflow-auto rounded-lg shadow hidden md:block">
+    <table className="w-full text-center">
+      <thead style={{backgroundColor: "var(--primary-background-color)", borderBottom: "2px solid var(--custom-border-color)"}}>
+        <tr>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Nombre</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Grado</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Calent.<br />(10pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Tec.Mano<br />(20pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Tec.Patada<br />(20pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Tec.Especial<br />(10pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Combate<br />(20pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Rompimiento<br />(10pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Teórica<br />(10pts)</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Nota<br />Final</th>
+          <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--primary-text-color)" }}>Puesto</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-100">
+        {estudiantesOrdenados.map((est, orden) => (
+          <Calificaciones
+            key={est.index}
+            index={est.index}
+            nombre={est.nombre}
+            grado={est.grado}
+            calentamiento={est.calentamiento}
+            tec_mano={est.tec_mano}
+            tec_patada={est.tec_patada}
+            tec_especial={est.tec_especial}
+            combate={est.combate}
+            rompimiento={est.rompimiento}
+            teorica={est.teorica}
+            onNotaFinalChange={handleNotaChange}
+            puesto={orden + 1}
+          />
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
   );
 };
 
