@@ -11,11 +11,13 @@ import StudentsIcon from "../assets/icons/StudentsIcon.jsx";
 
 import Opcion from "./Opcion.jsx";
 import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
+import { useAuth } from "../Auth/AuthContext.jsx";
 
 export const SidebarContext = createContext();
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
+  const { isAuth, logout } = useAuth();
   return (
     <>
       <aside
@@ -108,6 +110,20 @@ const Sidebar = () => {
                 title="Ingresar"
                 to="/login"
               />
+              {isAuth && (
+                <button
+                  onClick={logout}
+                  className={({ isActive }) =>
+                    `relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
+                      isActive
+                        ? "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)]"
+                        : "hover:bg-[var(--sidebar-hover-bg)] text-[var(--secundary-text-color)]"
+                    }`
+                  }
+                >
+                  Cerrar Sesión
+                </button>
+              )}
             </ul>
           </SidebarContext.Provider>
 
