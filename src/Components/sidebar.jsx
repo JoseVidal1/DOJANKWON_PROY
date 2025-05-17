@@ -33,9 +33,12 @@ const Sidebar = () => {
 
   return (
     <>
+    {/* Fondo difuminado en moviles */}
     {isMobile && expanded && (
       <div className="fixed inset-0 backdrop-blur-md z-40" />
       )}
+
+
       {/* Sidebar */}
       <aside className={`${isMobile && expanded ? 'fixed z-50 inset-y-0 left-0' : 'sticky'} top-0 h-[100dvh] min-h-screen transition-all duration-300${expanded ? "w-64" : "w-16"}`}>
         <nav className="h-full flex flex-col border-0 shadow-xl" style={{ backgroundColor: "var(--secundary-dark-color)" }}>

@@ -5,14 +5,54 @@ import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([
     {
-      id: '1001',
-      rol: 'Recep',
-      usuario: 'JUANCETO01',
-      nombres: 'Juan',
-      apellidos: 'PEPEFORTUNA',
-      celular: '123',
-      direccion: 'Calle 12444',
-      correo: 'juanceto01@gmail.com',
+     id: '1001',
+    rol: 'Recep',
+    usuario: 'JUANCETO01',
+    nombres: 'Juan',
+    apellidos: 'PEPEFORTUNA',
+    celular: '123',
+    direccion: 'Calle 12444',
+    correo: 'juanceto01@gmail.com',
+  },
+  {
+    id: '1002',
+    rol: 'Admin',
+    usuario: 'MARIACRUZ02',
+    nombres: 'Maria',
+    apellidos: 'Cruz Torres',
+    celular: '3214567890',
+    direccion: 'Carrera 5 #45-60',
+    correo: 'maria.cruz@gmail.com',
+  },
+  {
+    id: '1003',
+    rol: 'Instructor',
+    usuario: 'LUISCAPA03',
+    nombres: 'Luis',
+    apellidos: 'Capablanca',
+    celular: '3129876543',
+    direccion: 'Avenida 8 #12-90',
+    correo: 'luis.capa@gmail.com',
+  },
+  {
+    id: '1004',
+    rol: 'Recep',
+    usuario: 'ANAPEREZ04',
+    nombres: 'Ana',
+    apellidos: 'Pérez Gómez',
+    celular: '3001122334',
+    direccion: 'Calle 10 #20-30',
+    correo: 'ana.perez@gmail.com',
+  },
+  {
+    id: '1005',
+    rol: 'Admin',
+    usuario: 'CARLOSQ05',
+    nombres: 'Carlos',
+    apellidos: 'Quintero Vélez',
+    celular: '3187788990',
+    direccion: 'Transversal 9 #33-77',
+    correo: 'carlosq@gmail.com',
     },
   ]);
 
@@ -46,7 +86,7 @@ const Usuarios = () => {
    <h1 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-7xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>REGISTRAR USUARIOS</h1>
    <hr className="w-[calc(100%+140px)] mx-[-70px] border-t border-[color:var(--secundary-dark-color)] mb-6" /> {/* Lineas decorativas verticales debajo */}
    <hr className="absolute left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
-   <p className= "font-josefin text-sm ml-2" style={{ color: "var(--text-dark-color)" }} >Gestiona de forma <span style={{ color: "var(--accent-dark-color)" }}>segura</span> a los usuarios del sistema.<br />controla sus permisos de <span style={{ color: "var(--accent-dark-color)" }}>acceso</span>de forma eficiente</p>
+   <p className= "font-josefin ml-2"> Gestiona de forma <span style={{ color: "var(--accent-dark-color)" }}>segura</span> a los usuarios del sistema.<br />controla sus permisos de <span style={{ color: "var(--accent-dark-color)" }}>acceso </span>de forma eficiente</p>
    <hr className=" left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
    
     <h1 className=' mt-10 text-sm font-bold ml-2  font-josefin' style={{ color: "var(--accent-dark-color)" }}>DATOS DE USUARIO</h1>
@@ -156,9 +196,9 @@ const Usuarios = () => {
             <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Edición</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-[#4b607f]">
           {usuarios.map((u, idx) => (
-            <tr key={u.id} className={idx % 2 === 0 ? '' : ''} style={{ backgroundColor: idx % 2 === 0 ? 'var(--sidebar-dark-hover)' : 'var(--text-dark-color)' }}>
+            <tr key={u.id} className={idx % 2 === 0 ? '' : ''} style={{ backgroundColor: idx % 2 === 0 ? 'var(--sidebar-dark-hover)' : 'var(--secundary-dark-color)' }}>
               {['id', 'rol', 'usuario', 'nombres', 'apellidos', 'celular', 'direccion', 'correo'].map((field) => (
                 <td key={field} className="p-2">
                   <input

@@ -82,7 +82,7 @@ const Estudiante = () => {
       <h1 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-7xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>REGISTRAR ESTUDIANTES</h1>
       <hr className="w-[calc(100%+140px)] mx-[-70px] border-t border-[color:var(--secundary-dark-color)] mb-6" /> {/* Lineas decorativas verticales debajo */}
       <hr className="absolute left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
-      <p>Administra de forma <span style={{ color: "var(--accent-dark-color)" }}>eficiente</span> la información académica de los estudiantes.<br />Controla su <span style={{ color: "var(--accent-dark-color)" }}>progreso</span> y gestiona sus datos de forma <span style={{ color: "var(--accent-dark-color)" }}>centralizada</span>.</p>
+      <p className='ml-2 font-josefin'>Administra de forma <span style={{ color: "var(--accent-dark-color)" }}>eficiente</span> la información académica de los estudiantes.<br />Controla su <span style={{ color: "var(--accent-dark-color)" }}>progreso</span> y gestiona sus datos de forma <span style={{ color: "var(--accent-dark-color)" }}>centralizada</span>.</p>
       <hr className=" left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
       <h1 className=' mt-10 text-sm font-bold ml-2  font-josefin' style={{ color: "var(--accent-dark-color)" }}>DATOS DE USUARIO</h1>
       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
@@ -180,7 +180,7 @@ const Estudiante = () => {
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Acciones</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[#4b607f]">
             {/* Filtrado Est */}
             {estudiantes.filter(est => Object.values(est).some(valor => typeof valor === 'string' && valor.toLowerCase().includes(busqueda.toLowerCase()))).map(est => (
               <tr key={est.id} style={{ backgroundColor: 'var(--sidebar-dark-hover)' }}>
