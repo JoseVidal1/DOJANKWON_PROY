@@ -1,3 +1,6 @@
+/*fonts*/
+
+
 /*Colores Primarios*/
 #root { 
   width: 100%;
@@ -32,6 +35,16 @@
 
   /*Colores con switch 2*/
   --primary-dark-color: #111117;
+  --secundary-dark-color: #18181e; /*#1e1e2f*/
+  --sidebar-dark-hover: #16161d;
+  --terceary-dark-color: #4b607f;
+  --accent-dark-color: #F44E1C;
+  --text-dark-color: #e8d8c9;
+
+  --sidebar-dark-hover-transparent: #16161d66; /* #16161d con 40% opacidad */
+  --text-dark-color-transparent: #e8d8c966; /* #e8d8c9 con 40% opacidad */
+    --accent-dark-color-transparent: #f44e1c66; /* #F44E1C al 40% */
+
 }
 
 html, body, #root {
