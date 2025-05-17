@@ -24,51 +24,51 @@ function Login() {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-800">Login</h1>
-          </div>
-          <form className="space-y-5" onSubmit={handleLogin}>
+      <div className="relative w-full h-screen bg-[#111117] flex items-center justify-center overflow-hidden text-[#e8d8c9]">
+        {/* Fondo con gradiente circular */}
+        <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-[#4b607f] via-[#111117] to-[#4b607f] rounded-full filter blur-3xl opacity-30 animate-pulse-slow" />
+
+        {/* Textura "grainy" opcional */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] z-0" />
+
+        {/* Formulario de login */}
+        <div className="z-10 w-full max-w-md px-10 py-12 bg-[#111117]/80 rounded-2xl shadow-2xl backdrop-blur-sm">
+          <h1 className="text-3xl font-bold text-center mb-2">DOJANKWON</h1>
+          <p className="text-sm text-center mb-8">
+            The art of digital illusion.
+          </p>
+          <form className="space-y-6" onSubmit={handleLogin}>
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
+              <label className="block text-sm font-medium mb-1">Usuario</label>
               <input
-                type="text"
-                id="username"
-                name="username"
+                id="email"
                 required
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                type="text"
+                className="w-full px-4 py-2 rounded-md bg-[#1a1a22] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#F44E1C] transition duration-200"
+                placeholder="Nombre de usuario"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
+              <label className="block text-sm font-medium mb-1">
+                Contraseña
               </label>
               <input
-                type="password"
                 id="password"
-                name="password"
+                type="password"
                 required
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-2 rounded-md bg-[#1a1a22] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#F44E1C] transition duration-200"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+              className="w-full py-2 bg-[#4b607f] hover:bg-[#3a4a65] text-white rounded-md transition duration-200"
             >
-              Login
+              Iniciar sesión
             </button>
           </form>
         </div>
