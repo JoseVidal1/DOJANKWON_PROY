@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ModalEE from '../Components/ModalEE.jsx';
-import AgregarEstudiante from '../Components/AgregarEstudiante.jsx';
+//import AgregarEstudiante from '../Components/AgregarEstudiante.jsx';
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 
@@ -49,28 +49,28 @@ const Estudiante = () => {
   };
 
   // Agregar Est con Fecha
-  const handleAgregarEstudiante = (nuevo) => {
-  const nacimiento = new Date(nuevo.edad);
-  const hoy = new Date();
-  const edadCalculada = hoy.getFullYear() - nacimiento.getFullYear();
-  const mesDiferencia = hoy.getMonth() - nacimiento.getMonth();
+//   const handleAgregarEstudiante = (nuevo) => {
+//   const nacimiento = new Date(nuevo.edad);
+//   const hoy = new Date();
+//   const edadCalculada = hoy.getFullYear() - nacimiento.getFullYear();
+//   const mesDiferencia = hoy.getMonth() - nacimiento.getMonth();
 
-  const edadFinal = mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < nacimiento.getDate()) ? edadCalculada - 1 : edadCalculada;
+//   const edadFinal = mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < nacimiento.getDate()) ? edadCalculada - 1 : edadCalculada;
 
-  // Validaciones
-  if (nacimiento.getFullYear() >= hoy.getFullYear()) {
-    alert("La fecha de nacimiento no puede ser del año actual o posterior.");
-    return;
-  }
-  if (edadFinal > 120) {
-    alert("La edad no puede ser mayor a 120 años.");
-    return;
-  }
+//   // Validaciones
+//   if (nacimiento.getFullYear() >= hoy.getFullYear()) {
+//     alert("La fecha de nacimiento no puede ser del año actual o posterior.");
+//     return;
+//   }
+//   if (edadFinal > 120) {
+//     alert("La edad no puede ser mayor a 120 años.");
+//     return;
+//   }
 
-  const estudiante = { ...nuevo, edad: edadFinal };
-  setEstudiantes(prev => [...prev, estudiante]);
-  setIsModalAgregar(false);
-};
+//   const estudiante = { ...nuevo, edad: edadFinal };
+//   setEstudiantes(prev => [...prev, estudiante]);
+//   setIsModalAgregar(false);
+// };
 
   return (
     <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
