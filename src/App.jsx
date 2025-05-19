@@ -11,6 +11,8 @@ import Reportes from './page/Reportes';
 import Prestamos from './page/Prestamos';
 import Examenes from './page/Examenes';
 import Estudiantes from './page/Estudiantes';
+import HistorialPrestamo from './page/HistorialPrestamo';
+import Devoluciones from './page/Devoluciones';
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
       <Route path="/usuarios" element={<Usuarios />} />
       <Route path="/reportes" element={<Reportes />} />
       <Route path="/prestamos" element={<Prestamos />} />
+      <Route path="/historialPrestamo" element={<HistorialPrestamo />} />
+      <Route path="/devoluciones" element={<Devoluciones />} />
       <Route path="/examenes" element={<Examenes />} />
       <Route path="/estudiantes" element={<Estudiantes />} />
     </Routes>

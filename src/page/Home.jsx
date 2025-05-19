@@ -47,7 +47,7 @@ const Home = () => {
           </button>
         </Link>
 
-        <Link to="/productos">
+        <Link to="/prestamos">
          <button className="flex flex-col items-center justify-center w-36 h-36 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-[color:var(--secundary-dark-color)] hover:bg-[color:var(--accent-dark-color)] text-white border-2 border-[color:var(--accent-dark-color)]  shadow-lg transition duration-300">
             <ProductIcon className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 mb-2 text-white" />
             <span className="text-base sm:text-lg lg:text-xl font-semibold">Prestamo</span>

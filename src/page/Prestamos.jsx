@@ -8,12 +8,13 @@ import PrestamoModal from '../Components/PrestamoModal.jsx';
 
 const Prestamos = () => {
   const [productos, setProductos] = useState([
-    { id: 1, categoria: 'Equipo de combate', descripcion: 'Peto de combate', cantidad: 1, fechaPrestamo: '2025-04-25', clientePrestado: 'ILLO', fechaDevolucion: '2025-04-27'},
-    { id: 2, categoria: 'Equipo de entrenamiento', descripcion: 'Paleta de entrenamiento', cantidad: 2, fechaPrestamo: '2025-05-23', clientePrestado: 'Prof.Irma', fechaDevolucion: '2025-05-28'},
+    { id: 1, categoria: 'Equipo de combate', descripcion: 'Peto de combate', cantidad: 1},
+    { id: 2, categoria: 'Equipo de entrenamiento', descripcion: 'Paleta de entrenamiento', cantidad: 2},
   ]);
   const [modalPrestamoAbierto, setModalPrestamoAbierto] = useState(false);
   const [productoParaPrestamo, setProductoParaPrestamo] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  
 
   const handleInputChange = (id, field, value) => {
     setProductos(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
@@ -117,31 +118,16 @@ const Prestamos = () => {
 
     {/* div principal tabla */}
     <div className="p-5 mt-10">
-      {/* BUscar Producto */}
-      <div className="mb-4 w-full flex flex-col md:flex-row md:items-center gap-2">
-        <div className="relative w-full md:w-1/3">
-          <input type="text" placeholder="Buscar Producto..." className="w-full pl-10 pr-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 text-sm" style={{ backgroundColor: "var(--sidebar-dark-hover)", borderColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)", outlineColor: "var(--terceary-dark-color)" }} />
-          <button type="button" className="absolute inset-y-0 left-0 px-3 flex items-center text-[#F44E1C] hover:text-[#f44e1c66]">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 1 0-12 0 6 6 0 0 0 12 0z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
 
         {/* Tabla de productos */}
         <div className="overflow-auto rounded-lg shadow hidden md:block">
           <table className="w-full text-center shadow-lg border border-[color:var(--terceary-dark-color)]">
             <thead style={{backgroundColor: "var(--secundary-dark-color)", borderBottom: "1px solid var(--terceary-dark-color)"}}>
               <tr>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Categoria</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Descripción</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Cantidad</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Fecha de Prestamo</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Cliente Prestado</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Fecha de Devolucion</th>
-                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Acciones</th>
+                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color)" }}>Categoria</th>
+                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color)" }}>Descripción</th>
+                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color)" }}>Cantidad</th>
+                <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color)" }}>Acciones</th>
               </tr>
             </thead>
            <tbody className="divide-y divide-[#4b607f]">
@@ -150,10 +136,7 @@ const Prestamos = () => {
                  <td className="p-2">{producto.categoria}</td>
                  <td className="p-2">{producto.descripcion}</td>
                  <td className="p-2"><input type="number" value={producto.cantidad} onChange={e => handleInputChange(producto.id, 'cantidad', e.target.value)} className="w-24 rounded px-1 py-0.5 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></td>
-                 <td className="p-2">{producto.fechaPrestamo}</td>
-                 <td className="p-2">{producto.clientePrestado}</td>
-                 <td className="p-2"><input type="date" value={producto.fechaDevolucion} onChange={e => handleInputChange(producto.id, 'fechaDevolucion', e.target.value)} className="w-full rounded px-3 py-1 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></td>
-                  <td className="p-3 flex justify-center space-x-2">
+                 <td className="p-3 flex justify-center space-x-2">
                    <button onClick={() => guardarProducto(producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios"><EditIcon className="w-5 h-5" /></button>
                    <button onClick={() => eliminarProducto(producto.id)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto"><DeleteIcon className="w-5 h-5" /></button>
                    <button onClick={() => abrirModalPrestamo(producto)} className="p-1 text-sm bg-blue-600 rounded hover:bg-blue-800" title="Solicitar préstamo"><PrestamoIcon className="w-5 h-5" /></button>
@@ -168,16 +151,15 @@ const Prestamos = () => {
        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
           {productos.map((producto) => (
             <div key={producto.id} className="bg-white space-y-3 p-4 rounded-lg shadow" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)",}}>
-              {[ "categoria", "descripcion","cantidad","fechaPrestamo","clientePrestado","fechaDevolucion",].map((field) => {
-                const isEditable = field === "cantidad" || field === "fechaDevolucion";
-                const inputType = field === "cantidad" ? "number" : "date";
+              {[ "categoria", "descripcion","cantidad",].map((field) => {
+                const isEditable = field === "cantidad";
                 const fieldValue = producto[field] ?? "";
               return (
               <div key={field} className="text-sm text-center">
                 <label className="block font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>{field}:</label>
                 
                 {isEditable ? (
-                  <input type={inputType} value={fieldValue} onChange={(e) =>handleInputChange(producto.id, field, e.target.value)}
+                  <input type="number" value={fieldValue} onChange={(e) =>handleInputChange(producto.id, field, e.target.value)}
                   className="w-full rounded px-2 py-1 text-sm text-center" style={{backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)",}}/>
                 ) : (
                  <span className="text-right">{fieldValue || "-"}</span>
