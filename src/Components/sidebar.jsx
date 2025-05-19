@@ -61,7 +61,7 @@ const Sidebar = () => {
               <Opcion icon={<HomeIcon className="w-5 h-5 " />} title="Inicio" to="/" />
               <Opcion icon={<UserIcon className="w-5 h-5"/>} title="Usuarios" to="/usuarios" />
               <Opcion icon={<ReportIcon className="w-5 h-5"/>} title="Reportes" to="/reportes" />
-              <Opcion icon={<ProductIcon className="w-5 h-5"/>} title="Productos" to="/productos" />
+              <Opcion icon={<ProductIcon className="w-5 h-5"/>} title="Prestamos" to="/prestamos" />
               <Opcion icon={<ExamIcon className="w-5 h-5"/>} title="Examenes" to="/examenes" />
               <Opcion icon={<StudentsIcon className="w-5 h-5"/>} title="Estudiantes" to="/Estudiantes" />
             </ul>
