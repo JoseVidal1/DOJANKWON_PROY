@@ -108,13 +108,7 @@ const Sidebar = () => {
               {isAuth && (
                 <button
                   onClick={logout}
-                  className={({ isActive }) =>
-                    `relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
-                      isActive
-                        ? "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)]"
-                        : "hover:bg-[var(--sidebar-hover-bg)] text-[var(--secundary-text-color)]"
-                    }`
-                  }
+                  className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors text-[var(--secundary-text-color)] hover:bg-[var(--sidebar-hover-bg)] w-full text-left"
                 >
                   Cerrar Sesión
                 </button>
