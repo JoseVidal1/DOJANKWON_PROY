@@ -105,11 +105,6 @@ const Sidebar = () => {
                 title="Pagos"
                 to="/Pago"
               />
-              <Opcion
-                icon={<StudentsIcon className="w-5 h-5" />}
-                title="Ingresar"
-                to="/login"
-              />
               {isAuth && (
                 <button
                   onClick={logout}
