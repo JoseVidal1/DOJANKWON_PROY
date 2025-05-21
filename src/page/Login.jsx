@@ -3,8 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth/AuthContext";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  //const [email, setEmail] = useState("");
+  //const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("mail@gmail.com");
+  const [password, setPassword] = useState("123456");
   const nav = useNavigate();
   const autorizacion = useAuth();
   const location = useLocation();
