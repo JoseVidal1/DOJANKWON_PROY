@@ -25,18 +25,6 @@ function Pago() {
 
   const [filtro, setFiltro] = useState("Todos");
 
-  const cambiarEstado = (usuario) => {
-    setDatos(
-      datos.map((item) =>
-        item.usuario === usuario
-          ? {
-              ...item,
-              estado: item.estado === "Pendiente" ? "Pagado" : "Pendiente",
-            }
-          : item
-      )
-    );
-  };
 
   const datosFiltrados = datos.filter((item) => {
     if (filtro === "Todos") return true;
@@ -114,8 +102,8 @@ function Pago() {
                   }`}
                 >
                   {dato.estado === "Pendiente"
-                    ? "Marcar como Pagado"
-                    : "Marcar como Pendiente"}
+                    ?"Reporte Pago"
+                    : null}
                 </button>
               </div>
             </div>

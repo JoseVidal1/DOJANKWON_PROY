@@ -8,6 +8,7 @@ import ReportIcon from "../assets/icons/ReportIcon.jsx";
 import ProductIcon from "../assets/icons/ProductIcon.jsx";
 import ExamIcon from "../assets/icons/ExamIcon.jsx";
 import StudentsIcon from "../assets/icons/StudentsIcon.jsx";
+import PagoIcon from "../assets/icons/PagoIcon.jsx";
 
 import Opcion from "./Opcion.jsx";
 import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
@@ -80,11 +81,11 @@ const Sidebar = () => {
                 title="Usuarios"
                 to="/usuarios"
               />
-              <Opcion
+              {/*<Opcion
                 icon={<ReportIcon className="w-5 h-5" />}
                 title="Reportes"
                 to="/reportes"
-              />
+              />**/}
               <Opcion
                 icon={<ProductIcon className="w-5 h-5" />}
                 title="Productos"
@@ -101,13 +102,13 @@ const Sidebar = () => {
                 to="/Estudiantes"
               />
               <Opcion
-                icon={<StudentsIcon className="w-5 h-5" />}
+                icon={<PagoIcon className="w-5 h-5" />}
                 title="Pagos"
                 to="/Pago"
               />
               {isAuth && (
                 <button
-                  onClick={logout}
+                  onClick={logout}  
                   className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors text-[var(--secundary-text-color)] hover:bg-[var(--sidebar-hover-bg)] w-full text-left"
                 >
                   Cerrar Sesión
