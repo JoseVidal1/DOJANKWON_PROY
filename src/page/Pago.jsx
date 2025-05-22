@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function Pago() {
-  // Aqupi va la lógica de los usuarios.
+  // Aquí va la lógica de los usuarios.
   const [datos, setDatos] = useState([
     {
       usuario: "PEPE MOLINA",
@@ -25,6 +25,13 @@ function Pago() {
 
   const [filtro, setFiltro] = useState("Todos");
 
+  const cambiarEstado = (usuario) => {
+    setDatos(
+      datos.map((item) =>
+        item.usuario === usuario ? { ...item, estado: "Pagado" } : item
+      )
+    );
+  };
 
   const datosFiltrados = datos.filter((item) => {
     if (filtro === "Todos") return true;
@@ -82,7 +89,7 @@ function Pago() {
             >
               <div>{dato.usuario}</div>
               <div>{dato.rol}</div>
-              <div>{dato.fechaPago}</div>
+              <div>{dato.fechaPago || dato.fechaPago}</div>
               <div
                 className={`font-medium ${
                   dato.estado === "Pagado"
@@ -94,16 +101,17 @@ function Pago() {
               </div>
               <div>
                 <button
-                  onClick={() => cambiarEstado(dato.usuario)}
+                  onClick={() =>
+                    dato.estado === "Pendiente" && cambiarEstado(dato.usuario)
+                  }
                   className={`px-3 py-1 rounded text-white ${
                     dato.estado === "Pendiente"
                       ? "bg-green-500 hover:bg-green-600"
-                      : "bg-gray-500 hover:bg-gray-600"
+                      : "bg-gray-300 hover:bg-gray-400 cursor-not-allowed"
                   }`}
+                  disabled={dato.estado !== "Pendiente"}
                 >
-                  {dato.estado === "Pendiente"
-                    ?"Reporte Pago"
-                    : null}
+                  {dato.estado === "Pendiente" ? "Reporte Pago" : "Pagado"}
                 </button>
               </div>
             </div>
