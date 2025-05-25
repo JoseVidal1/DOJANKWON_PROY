@@ -9,6 +9,7 @@ export const theme = {
     pink: fuchsia,
   },
   fontFamily: {
+    josefin: ['"Josefin Sans"', "sans-serif"],
     sans: ["Graphik", "sans-serif"],
     serif: ["Merriweather", "serif"],
   },

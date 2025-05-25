@@ -1,5 +1,7 @@
+/*fonts*/
+
 /*Colores Primarios*/
-#root { 
+#root {
   width: 100%;
   min-height: 100vh;
 
@@ -8,7 +10,7 @@
   --primary-background-color: #fff;
   --secundary-background-color: #f7f7f7;
 
-  --custom-border-color:#c4c4c4;
+  --custom-border-color: #c4c4c4;
 
   --primary-text-color: #000;
   --secundary-text-color: #4b4c53;
@@ -26,34 +28,48 @@
   --sidebar-active-text: #1e3a8a;
 
   /*Tabla hover  e0e7ff*/
-   --table-hover-bg: #e0e7ff;
-
-
+  --table-hover-bg: #e0e7ff;
 
   /*Colores con switch 2*/
   --primary-dark-color: #111117;
+  --secundary-dark-color: #18181e; /*#1e1e2f*/
+  --sidebar-dark-hover: #16161d;
+  --terceary-dark-color: #4b607f;
+  --accent-dark-color: #f44e1c;
+  --accent-light-color: #f78360;
+  --text-dark-color: #e8d8c9;
+
+  --sidebar-dark-hover-transparent: #16161d66; /* #16161d con 40% opacidad */
+  --text-dark-color-transparent: #e8d8c966; /* #e8d8c9 con 40% opacidad */
+  --accent-dark-color-transparent: #f44e1c66; /* #F44E1C al 40% */
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
-/*Font*/
+/* fonts */
 @font-face {
-  font-family: 'Josefin Sans';
-  src: url('/src/assets/fonts/JosefinSans-VariableFont_wght.ttf') format('truetype');
+  font-family: "Josefin Sans";
+  src: url("../assets/fonts/JosefinSans-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: 100 700;
   font-style: normal;
 }
+
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -64,6 +80,18 @@ html, body, #root {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes panImage {
+  0% {
+    transform: scale(1.1) translateX(0%) translateY(0%);
+  }
+  50% {
+    transform: scale(1.2) translateX(-5%) translateY(-3%);
+  }
+  100% {
+    transform: scale(1.1) translateX(5%) translateY(3%);
   }
 }
 
@@ -80,4 +108,3 @@ html, body, #root {
 .read-the-docs {
   color: #888;
 }
-
