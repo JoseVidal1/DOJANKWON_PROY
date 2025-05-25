@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ModalEE from '../Components/ModalEE.jsx';
 //import AgregarEstudiante from '../Components/AgregarEstudiante.jsx';
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
+import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 
 const Estudiante = () => {
   const [estudiantes, setEstudiantes] = useState([
@@ -13,26 +13,75 @@ const Estudiante = () => {
   const [seleccionado, setSeleccionado] = useState(null);
   const [isModalAgregar, setIsModalAgregar] = useState(false);
 
+  // Estado para el formulario de nuevo estudiante
+  const [nuevoEst, setNuevoEst] = useState({
+    id: '',
+    nombre: '',
+    apellido: '',
+    edad: '',
+    eps: '',
+    direccion: '',
+    telefono: '',
+    correo: ''
+  });
+
   const handleInputChange = (id, campo, valor) => {
     setEstudiantes(prev => prev.map(est => est.id === id ? { ...est, [campo]: valor } : est));
   };
 
-  // Agregar Estudiante
-  /*const agregarEstudiante = (e) => {
+  // Manejar cambios en el formulario
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoEst(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Agregar estudiante desde el formulario
+  const handleAgregarEstudiante = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const nuevoEstudiante = {
-      id: formData.get('cc'),
-      nombre: formData.get('nombre'),
-      apellido: formData.get('apellido'),
-      edad: formData.get('edad'),
-      eps: formData.get('eps'),
-      direccion: formData.get('direccion'),
-      telefono: formData.get('telefono'),
-      correo: formData.get('correo'),
-    };
-    onAdd(nuevoEstudiante);
-  };*/
+    if (
+      !nuevoEst.id ||
+      !nuevoEst.nombre ||
+      !nuevoEst.apellido ||
+      !nuevoEst.edad ||
+      !nuevoEst.eps ||
+      !nuevoEst.direccion ||
+      !nuevoEst.telefono ||
+      !nuevoEst.correo
+    ) {
+      alert("Por favor completa todos los campos.");
+      return;
+    }
+    // Calcular edad a partir de la fecha de nacimiento
+    const nacimiento = new Date(nuevoEst.edad);
+    const hoy = new Date();
+    let edadCalculada = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edadCalculada--;
+    }
+    if (nacimiento.getFullYear() >= hoy.getFullYear()) {
+      alert("La fecha de nacimiento no puede ser del año actual o posterior.");
+      return;
+    }
+    if (edadCalculada > 120) {
+      alert("La edad no puede ser mayor a 120 años.");
+      return;
+    }
+    setEstudiantes(prev => [
+      ...prev,
+      { ...nuevoEst, edad: edadCalculada }
+    ]);
+    setNuevoEst({
+      id: '',
+      nombre: '',
+      apellido: '',
+      edad: '',
+      eps: '',
+      direccion: '',
+      telefono: '',
+      correo: ''
+    });
+  };
 
   // campo de buscar
   const [busqueda, setBusqueda] = useState('');
@@ -44,33 +93,34 @@ const Estudiante = () => {
 
   // Confirmar eliminar o editar
   const onAccionConfirmada = () => {
-    if (accion === 'eliminar') setEstudiantes(prev => prev.filter(est => est.id !== seleccionado.id));
+    if (accion === "eliminar")
+      setEstudiantes((prev) =>
+        prev.filter((est) => est.id !== seleccionado.id)
+      );
     setModalOpen(false);
   };
 
-  // Agregar Est con Fecha
-//   const handleAgregarEstudiante = (nuevo) => {
-//   const nacimiento = new Date(nuevo.edad);
-//   const hoy = new Date();
-//   const edadCalculada = hoy.getFullYear() - nacimiento.getFullYear();
-//   const mesDiferencia = hoy.getMonth() - nacimiento.getMonth();
+   // Estado para el modal de confirmación
+  const [modalConfirmacionAbierto, setModalConfirmacionAbierto] =
+    useState(false);
+  const [accionActual, setAccionActual] = useState(null);
+  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState(null);
 
-//   const edadFinal = mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < nacimiento.getDate()) ? edadCalculada - 1 : edadCalculada;
+  const manejarAccion = (accion, estudiante) => {
+    setAccionActual(accion);
+    setEstudianteSeleccionado(estudiante);
+    setModalConfirmacionAbierto(true);
+  };
 
-//   // Validaciones
-//   if (nacimiento.getFullYear() >= hoy.getFullYear()) {
-//     alert("La fecha de nacimiento no puede ser del año actual o posterior.");
-//     return;
-//   }
-//   if (edadFinal > 120) {
-//     alert("La edad no puede ser mayor a 120 años.");
-//     return;
-//   }
-
-//   const estudiante = { ...nuevo, edad: edadFinal };
-//   setEstudiantes(prev => [...prev, estudiante]);
-//   setIsModalAgregar(false);
-// };
+  const confirmarAccion = () => {
+    if (accionActual === "delete") {
+      // Lógica para eliminar estudiante
+      setEstudiantes((prev) =>
+        prev.filter((est) => est.id !== estudianteSeleccionado.id)
+      );
+    }
+    setModalConfirmacionAbierto(false);
+  };
 
   return (
     <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
@@ -88,67 +138,63 @@ const Estudiante = () => {
       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
       
       {/* datos para agregar Estudiantes*/}
-       <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4">
-
+      <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4" onSubmit={handleAgregarEstudiante}>
+        {/* ID */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="id" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">ID</label>
+          <input type="text" name="id" placeholder="Cédula" value={nuevoEst.id} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
         {/* Nombre */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Nombres" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">NOMBRE</label>
-            <input type="text" name="nombre" placeholder="Nombres" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          {/* Apellido */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Apellidos" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">APELLIDO</label>
-            <input type="text" name="apellido" placeholder="Apellidos" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          {/* Eadad */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Edad" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">EDAD</label>
-            <input type="date" name="edad" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-          
-          {/* EPS */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Eps" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">EPS</label>
-            <input type="text" name="eps" placeholder="EPS" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          {/* Direccion */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Direccion" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">DIRECCION</label>
-            <input type="text" name="direccion" placeholder="Dirección" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          {/* Telefono */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Telefono" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">TELEFONO</label>
-            <input type="text" name="telefono" placeholder="Teléfono" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          {/* Correo */}
-          <div className="w-full md:flex-1 flex flex-col min-w-0">
-            <label htmlFor="Correo" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Correo</label>
-            <input type="email" name="correo" placeholder="Correo" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
-          </div>
-
-          <div className="w-full flex justify-center mt-6">
-            <button className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)"}}>
-              <span className="relative z-10">Agregar Estudiante</span>
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="nombre" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">NOMBRE</label>
+          <input type="text" name="nombre" placeholder="Nombres" value={nuevoEst.nombre} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Apellido */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="apellido" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">APELLIDO</label>
+          <input type="text" name="apellido" placeholder="Apellidos" value={nuevoEst.apellido} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Edad (fecha de nacimiento) */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="edad" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">FECHA NACIMIENTO</label>
+          <input type="date" name="edad" value={nuevoEst.edad} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* EPS */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="eps" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">EPS</label>
+          <input type="text" name="eps" placeholder="EPS" value={nuevoEst.eps} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Direccion */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="direccion" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">DIRECCION</label>
+          <input type="text" name="direccion" placeholder="Dirección" value={nuevoEst.direccion} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Telefono */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="telefono" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">TELEFONO</label>
+          <input type="text" name="telefono" placeholder="Teléfono" value={nuevoEst.telefono} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Correo */}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="correo" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Correo</label>
+          <input type="email" name="correo" placeholder="Correo" value={nuevoEst.correo} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        <div className="w-full flex justify-center mt-6">
+          <button type="submit" className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)"}}>
+            <span className="relative z-10">Agregar Estudiante</span>
             <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
               <div className="relative h-full w-8 bg-white/20" />
             </div>
-            </button>
-          </div>
-       </form>
-       <hr className="mt-0.5 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
-       {/* Presentacion tabla */}
-       <h1 className='text-sm ml-2 mt-20  font-josefin' style={{ color: "var(--accent-dark-color)" }}>taekwondo</h1>
-       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
-       <h1 className="text-2xl sm:text-2xl ml-2 md:text-4xl lg:text-5xl font-josefin mb-1 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>TABLA DE ESTUDIANTES</h1>
-       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+          </button>
+        </div>
+      </form>
+      <hr className="mt-0.5 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      {/* Presentacion tabla */}
+      <h1 className='text-sm ml-2 mt-20  font-josefin' style={{ color: "var(--accent-dark-color)" }}>taekwondo</h1>
+      <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <h1 className="text-2xl sm:text-2xl ml-2 md:text-4xl lg:text-5xl font-josefin mb-1 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>TABLA DE ESTUDIANTES</h1>
+      <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
 
-      
       {/* Tabla principal div */}
       <div className="p-5 mt-10">
         {/* Buscar */}
@@ -194,8 +240,8 @@ const Estudiante = () => {
                   </td>
                 ))}
                 <td className="p-3 flex justify-center space-x-2">
-                  <button onClick={() => abrirModal('editar', est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
-                  <button onClick={() => abrirModal('eliminar', est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
+                  <button onClick={() => manejarAccion("edit", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
+                  <button onClick={() => manejarAccion("delete", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
                 </td>
               </tr>
             ))}
@@ -216,19 +262,21 @@ const Estudiante = () => {
               <input type="text" value={est[c]} onChange={e => handleInputChange(est.id, c, e.target.value)} className="w-full rounded px-2 py-1 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></div>
             ))}
             <div className="flex justify-center space-x-2 pt-2">
-              <button onClick={() => abrirModal('editar', est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
-              <button onClick={() => abrirModal('eliminar', est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
+              <button onClick={() => manejarAccion("edit", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
+              <button onClick={() => manejarAccion("delete", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
             </div>
           </div>
         ))}
       </div>
-
-      <ModalEE isOpen={modalOpen} onClose={() => setModalOpen(false)} 
-      objeto={seleccionado?.nombre} 
-      onAccion={onAccionConfirmada} accion={accion}/>
-
-    </div>
-  </div>
+      {/* Modal de confirmación para editar/eliminar */}
+        <ModalConfirmacion
+          isOpen={modalConfirmacionAbierto}
+          onClose={() => setModalConfirmacionAbierto(false)}
+          onConfirm={confirmarAccion}
+          actionType={accionActual}
+          dataType="estudiante"/>
+     </div>
+   </div>
   );
 };
 

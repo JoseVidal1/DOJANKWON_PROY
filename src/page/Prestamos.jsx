@@ -4,6 +4,7 @@ import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import PrestamoIcon from '../assets/icons/PrestamoIcon.jsx';
 import PrestamoModal from '../Components/PrestamoModal.jsx';
+import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 //import { Delete } from 'lucide-react';
 
 const Prestamos = () => {
@@ -13,16 +14,36 @@ const Prestamos = () => {
   ]);
   const [modalPrestamoAbierto, setModalPrestamoAbierto] = useState(false);
   const [productoParaPrestamo, setProductoParaPrestamo] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
 
 
   const handleInputChange = (id, field, value) => {
     setProductos(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
   const guardarProducto = (producto) => {/*Logica para guardar cambios*/ };
-  const eliminarProducto = (id) => { setProductos(prev => prev.filter(p => p.id !== id)); };
-  const abrirModalPrestamo = (producto) => { setProductoParaPrestamo(producto); setModalPrestamoAbierto(true); };
-  const registrarPrestamo = (prestamo) => { setModalPrestamoAbierto(false); };
+  const eliminarProducto = (id) => {setProductos((prev) => prev.filter((p) => p.id !== id));};
+  const abrirModalPrestamo = (producto) => {setProductoParaPrestamo(producto);setModalPrestamoAbierto(true);};
+  const registrarPrestamo = (prestamo) => {setModalPrestamoAbierto(false);};
+
+  // Estado para el modal de confirmación
+  const [modalConfirmacionAbierto, setModalConfirmacionAbierto] =
+    useState(false);
+  const [accionActual, setAccionActual] = useState(null);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+
+  const manejarAccion = (accion, producto) => {
+    setAccionActual(accion);
+    setProductoSeleccionado(producto);
+    setModalConfirmacionAbierto(true);
+  };
+
+  const confirmarAccion = () => {
+    if (accionActual === "delete") {
+      eliminarProducto(productoSeleccionado.id);
+    } else if (accionActual === "edit") {
+      guardarProducto(productoSeleccionado);
+    }
+    setModalConfirmacionAbierto(false);
+  };
 
   return (
     <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
@@ -137,8 +158,8 @@ const Prestamos = () => {
                   <td className="p-2">{producto.descripcion}</td>
                   <td className="p-2"><input type="number" value={producto.cantidad} onChange={e => handleInputChange(producto.id, 'cantidad', e.target.value)} className="w-24 rounded px-1 py-0.5 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></td>
                   <td className="p-3 flex justify-center space-x-2">
-                    <button onClick={() => guardarProducto(producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios"><EditIcon className="w-5 h-5" /></button>
-                    <button onClick={() => eliminarProducto(producto.id)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto"><DeleteIcon className="w-5 h-5" /></button>
+                    <button onClick={() => manejarAccion("edit",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios"><EditIcon className="w-5 h-5" /></button>
+                    <button onClick={() => manejarAccion("dekete",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto"><DeleteIcon className="w-5 h-5" /></button>
                     <button onClick={() => abrirModalPrestamo(producto)} className="p-1 text-sm bg-blue-600 rounded hover:bg-blue-800" title="Solicitar préstamo"><PrestamoIcon className="w-5 h-5" /></button>
                   </td>
                 </tr>
@@ -170,11 +191,11 @@ const Prestamos = () => {
               {/* Acciones */}
               <div className="flex justify-center space-x-2 pt-2">
 
-                <button onClick={() => guardarProducto(producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios">
+                <button onClick={() => manejarAccion("edit",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios">
                   <EditIcon className="w-5 h-5" />
                 </button>
 
-                <button onClick={() => eliminarProducto(producto.id)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto">
+                <button onClick={() => manejarAccion("delete",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto">
                   <DeleteIcon className="w-5 h-5" />
                 </button>
 
@@ -187,8 +208,19 @@ const Prestamos = () => {
         </div>
         {/* Modal para gestionar el préstamo */}
         {modalPrestamoAbierto && (
-          <PrestamoModal productoSeleccionado={productoParaPrestamo} onClose={() => setModalPrestamoAbierto(false)} onSubmit={registrarPrestamo} />
+          <PrestamoModal 
+          productoSeleccionado={productoParaPrestamo} 
+          onClose={() => setModalPrestamoAbierto(false)} 
+          onSubmit={registrarPrestamo} />
         )}
+        {/* Modal de confirmación para editar/eliminar */}
+        <ModalConfirmacion
+          isOpen={modalConfirmacionAbierto}
+          onClose={() => setModalConfirmacionAbierto(false)}
+          onConfirm={confirmarAccion}
+          actionType={accionActual}
+          dataType="producto"
+        />
       </div>
     </div>
   );
