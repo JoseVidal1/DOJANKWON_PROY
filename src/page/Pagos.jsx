@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+import { Bell, User, Calendar, CreditCard } from 'lucide-react';
+
+const Pagos = () => {
+  const [listaPageos, setListaPagos] = useState([
+    { id: 'USR001', nombreUsuario: 'María González', fechaPago: '2024-05-15', fechaVencimiento: '2024-05-20', estadoPago: 'pagado' },
+    { id: 'USR002', nombreUsuario: 'Carlos Rodríguez', fechaPago: null, fechaVencimiento: '2024-05-25', estadoPago: 'proximo_vencer' },
+    { id: 'USR003', nombreUsuario: 'Ana Martínez', fechaPago: null, fechaVencimiento: '2024-05-30', estadoPago: 'pendiente' },
+    { id: 'USR004', nombreUsuario: 'Luis Fernández', fechaPago: null, fechaVencimiento: '2024-05-10', estadoPago: 'mora' },
+    { id: 'USR005', nombreUsuario: 'Patricia López', fechaPago: '2024-05-18', fechaVencimiento: '2024-05-22', estadoPago: 'pagado' },
+    { id: 'USR006', nombreUsuario: 'Roberto Silva', fechaPago: null, fechaVencimiento: '2024-05-26', estadoPago: 'proximo_vencer' }
+  ]);
+
+  const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [estadoFiltro, setEstadoFiltro] = useState('todos');
+
+  const obtenerConfiguracionEstado = (estadoPago) => {
+    if (estadoPago === 'pagado') return { clasesCSS: 'bg-green-100 text-green-800 border-green-200', textoMostrar: 'Pagado', icono: '✓' };
+    if (estadoPago === 'proximo_vencer') return { clasesCSS: 'bg-purple-100 text-purple-800 border-purple-200', textoMostrar: 'Próximo a Vencer', icono: '⏰' };
+    if (estadoPago === 'pendiente') return { clasesCSS: 'bg-yellow-100 text-yellow-800 border-yellow-200', textoMostrar: 'Pendiente', icono: '⚠️' };
+    if (estadoPago === 'mora') return { clasesCSS: 'bg-red-100 text-red-800 border-red-200', textoMostrar: 'En Mora', icono: '🚨' };
+    return { clasesCSS: 'bg-gray-100 text-gray-800 border-gray-200', textoMostrar: 'Desconocido', icono: '?' };
+  };
+
+  const manejarEnvioNotificacion = (nombreUsuario, estadoPago) => {
+    const mensaje = `Notificación enviada a ${nombreUsuario} - Estado: ${obtenerConfiguracionEstado(estadoPago).textoMostrar}`;
+    alert(mensaje);
+  };
+
+  const deberMostrarBotonNotificacion = (estadoPago) => estadoPago !== 'pagado';
+  const contarPagosPorEstado = (estadoBuscado) => listaPageos.filter(p => p.estadoPago === estadoBuscado).length;
+
+  const CartaPago = ({ datosUsuario }) => {
+    const conf = obtenerConfiguracionEstado(datosUsuario.estadoPago);
+    return (
+      <div className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border overflow-hidden" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--terceary-dark-color)" }}>
+        <div className="bg-gradient-to-r from-[#18181e] to-[#4b607f] p-4 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <User className="w-5 h-5" />
+              <span className="font-semibold">{datosUsuario.nombreUsuario}</span>
+            </div>
+            <span className="text-sm opacity-90">ID: {datosUsuario.id}</span>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <CreditCard className="w-4 h-4 text-gray-500" />
+              <div>
+                <p className="text-sm text-gray-500">Fecha de Pago</p>
+                <p className="font-medium">{datosUsuario.fechaPago || 'No pagado'}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <div>
+                <p className="text-sm text-gray-500">Fecha de Vencimiento</p>
+                <p className="font-medium">{datosUsuario.fechaVencimiento}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-center">
+            <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border ${conf.clasesCSS}`}>
+              <span className="mr-2">{conf.icono}</span>{conf.textoMostrar}
+            </span>
+          </div>
+          <div className="pt-4 border-t" style={{ borderColor: "var(--terceary-dark-color)" }}>
+            {deberMostrarBotonNotificacion(datosUsuario.estadoPago) ? (
+              <button onClick={() => manejarEnvioNotificacion(datosUsuario.nombreUsuario, datosUsuario.estadoPago)} className="w-full text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2" style={{ backgroundColor: 'var(--terceary-dark-color)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3d506b')}onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--terceary-dark-color)')}>
+                <Bell className="w-4 h-4" /><span>Enviar Notificación</span>
+              </button>
+            ) : (
+              <div className="w-full bg-gray-100 text-gray-500 font-medium py-3 px-4 rounded-lg text-center">
+                <span>✓ Pago Completado</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const TarjetaEstadistica = ({ etiqueta, cantidad, colorTexto }) => (
+    <div className="rounded-lg p-4 shadow-md text-center" style={{ backgroundColor: "var(--secundary-dark-color)" }}>
+      <p className={`text-2xl font-bold ${colorTexto}`}>{cantidad}</p>
+      <p className="text-sm text-white">{etiqueta}</p>
+    </div>
+  );
+
+  {/*Contendio principal*/}
+  return (
+    <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
+      {/* Presentacion */}
+      <hr className="absolute top-1 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <h1 className='text-sm font-bold ml-2  font-josefin' style={{ color: "var(--accent-dark-color)" }}>PAGOS</h1>
+      <hr className="absolute top-12 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <h1 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-7xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>GESTIONAR PAGOS</h1>
+      <hr className="w-[calc(100%+140px)] mx-[-70px] border-t border-[color:var(--secundary-dark-color)] mb-6" /> {/* Lineas decorativas verticales debajo */}
+      <hr className="absolute left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <p className="font-josefin ml-2">Supervisa los <span style={{ color: "var(--accent-dark-color)" }}>pagos</span> de Estudiantes de manera <span style={{ color: "var(--accent-dark-color)" }}>clara</span> y <span style={{ color: "var(--accent-dark-color)" }}>organizada</span>.<br />Asegura un seguimiento <span style={{ color: "var(--accent-dark-color)" }}>puntual</span> de vencimientos y gestiona las <span style={{ color: "var(--accent-dark-color)" }}>notificaciones</span> con facilidad.</p>
+      <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <hr className=" mt-10 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <h1 className='text-sm font-bold ml-2 text-center  font-josefin' style={{ color: "var(--accent-dark-color)" }}>ADMINISTRACION DE PAGOS</h1>
+      <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+
+      {/* Resumen Estado */}
+      <hr className="mt-5 left-[-80px] right-[-80px] border-t border-[color:var(--secundary-dark-color)]" />
+      <div className="ml-1">
+          <h2 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-6xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>ESTADOS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <TarjetaEstadistica etiqueta="Pagados" cantidad={contarPagosPorEstado('pagado')} colorTexto="text-green-600" />
+            <TarjetaEstadistica etiqueta="Próximos a Vencer" cantidad={contarPagosPorEstado('proximo_vencer')} colorTexto="text-purple-600" />
+            <TarjetaEstadistica etiqueta="Pendientes" cantidad={contarPagosPorEstado('pendiente')} colorTexto="text-yellow-600" />
+            <TarjetaEstadistica etiqueta="En Mora" cantidad={contarPagosPorEstado('mora')} colorTexto="text-red-600" />
+          </div>
+        </div>
+        <hr className="mb-5 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+        
+      <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      <h1 className='text-sm font-bold ml-2 text-center  font-josefin' style={{ color: "var(--accent-dark-color)" }}>ESTUDIANTES</h1>
+      <hr className="mb-5 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
+      {/* Div principal / contenido */}
+      <div className="w-full bg-transparent">
+
+        {/* Div busqueda / Filtros */}
+        <div className="mb-4 w-full flex flex-col md:flex-row md:items-center gap-2">
+          <input type="text" placeholder="Buscar por nombre de usuario..." className="w-1/2 pl-10 pr-3 py-2 border border-[color:var(--accent-dark-color)] rounded shadow-sm focus:outline-none focus:border-[color:var(--accent-dark-color)] focus:ring-[color:var(--accent-dark-color)] focus:ring-2 text-sm" value={terminoBusqueda} onChange={(e) => setTerminoBusqueda(e.target.value)}/>
+          <select className="w-1/2 pl-10 pr-3 py-2 border border-[color:var(--accent-dark-color)] rounded shadow-sm focus:outline-none focus:border-[color:var(--accent-dark-color)] focus:ring-[color:var(--accent-dark-color)] focus:ring-2 text-sm" value={estadoFiltro}onChange={(e) => setEstadoFiltro(e.target.value)}>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="todos">Todos los estados</option>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="pagado">Pagado</option>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="proximo_vencer">Próximo a vencer</option>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="pendiente">Pendiente</option>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="mora">En mora</option>
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {listaPageos
+            .filter(p => p.nombreUsuario.toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            .filter(p => estadoFiltro === 'todos' || p.estadoPago === estadoFiltro)
+            .map((datosUsuario) => (
+              <CartaPago key={datosUsuario.id} datosUsuario={datosUsuario} />
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Pagos;

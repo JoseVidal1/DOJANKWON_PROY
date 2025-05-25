@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion'; // Para animaciones sua
 //import Login from './page/Login';
 import Home from './page/Home';
 import Usuarios from './page/Usuarios';
-import Reportes from './page/Reportes';
+import Pagos from './page/Pagos';
 import Prestamos from './page/Prestamos';
 import Examenes from './page/Examenes';
 import Estudiantes from './page/Estudiantes';
@@ -31,7 +31,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/usuarios" element={<Usuarios />} />
-      <Route path="/reportes" element={<Reportes />} />
+      <Route path="/pagos" element={<Pagos />} />
       <Route path="/prestamos" element={<Prestamos />} />
       <Route path="/historialPrestamo" element={<HistorialPrestamo />} />
       <Route path="/devoluciones" element={<Devoluciones />} />

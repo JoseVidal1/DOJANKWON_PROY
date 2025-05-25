@@ -62,7 +62,7 @@ const Sidebar = () => {
             <ul className="flex-1 px-3 pt-11">
               <Opcion icon={<HomeIcon className="w-5 h-5 " />} title="Inicio" to="/" />
               <Opcion icon={<UserIcon className="w-5 h-5" />} title="Usuarios" to="/usuarios" />
-              <Opcion icon={<ReportIcon className="w-5 h-5" />} title="Reportes" to="/reportes" />
+              <Opcion icon={<ReportIcon className="w-5 h-5" />} title="Pagos" to="/pagos" />
               <li>
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowDropdown(!showDropdown)}>
