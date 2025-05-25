@@ -248,5 +248,4 @@ const Examenes = () => {
     </div>
   );
 };
-
 export default Examenes;
