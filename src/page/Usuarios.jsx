@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([
-    {
+    /*{
       id: '1001',
       rol: 'Recep',
       usuario: 'JUANCETO01',
@@ -54,68 +54,136 @@ const Usuarios = () => {
       celular: '3187788990',
       direccion: 'Transversal 9 #33-77',
       correo: 'carlosq@gmail.com',
-    },
+    },*/
   ]);
+  const [usuariosOriginales, setUsuariosOriginales] = useState([]);
+  const [busqueda, setBusqueda] = useState('');
 
-  // Estado para el formulario de nuevo usuario
+
+  useEffect(() => {
+    // Cargar usuarios desde la API al montar el componente
+    fetch('http://localhost:5234/api/Usuario')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los usuarios');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUsuarios(data);
+        setUsuariosOriginales(data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar usuarios:', error);
+      });
+  }, []);
+
   const [nuevoUsuario, setNuevoUsuario] = useState({
     id: '',
     rol: '',
     usuario: '',
+    contrasena: '',
     nombres: '',
     apellidos: '',
-    celular: '',
+    telefono: '',
     direccion: '',
     correo: ''
   });
-
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setNuevoUsuario(prev => ({ ...prev, [name]: value }));
   };
 
   const handleAgregarUsuario = (e) => {
-    e.preventDefault();
-    // Validación simple
-    if (
-      !nuevoUsuario.id ||
-      !nuevoUsuario.rol ||
-      !nuevoUsuario.usuario ||
-      !nuevoUsuario.nombres ||
-      !nuevoUsuario.apellidos ||
-      !nuevoUsuario.celular ||
-      !nuevoUsuario.direccion ||
-      !nuevoUsuario.correo
-    ) {
-      alert("Por favor completa todos los campos.");
-      return;
-    }
-    setUsuarios(prev => [...prev, nuevoUsuario]);
-    setNuevoUsuario({
-      id: '',
-      rol: '',
-      usuario: '',
-      nombres: '',
-      apellidos: '',
-      celular: '',
-      direccion: '',
-      correo: ''
+   e.preventDefault();
+  const form = e.target;
+
+  const nuevoUsuario = {
+    cc: form.cc.value,
+    rol: form.rol.value,
+    userName: form.userName.value,
+    contraseña: form.password.value,
+    nombres: form.nombres.value,
+    apellidos: form.apellidos.value,
+    telefono: form.telefono.value,
+    direccion: form.direccion.value,
+    correo: form.correo.value
+  };
+
+  fetch('http://localhost:5234/api/Usuario', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(nuevoUsuario),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Error al agregar el usuario');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Usuario agregado:', data);
+      setUsuarios((prev) => [...prev, data]);
+      form.reset(); // Limpia el formulario
+    })
+    .catch((error) => {
+      console.error('Error al agregar usuario:', error);
     });
   };
 
-  const InputCambios = (id, field, value) => {
+  const InputCambios = (cc, field, value) => {
     setUsuarios((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, [field]: value } : u))
+      prev.map((u) => (u.cc === cc ? { ...u, [field]: value } : u))
     );
   };
 
-  const DeleteU = (id) => {
-    setUsuarios((prev) => prev.filter((u) => u.id !== id));
+  const DeleteU = (cc) => {
+    fetch(`http://localhost:5234/api/Usuario/${cc}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        setUsuarios((prev) => prev.filter((u) => u.cc !== cc));
+      })
+      .catch((error) => {
+        console.error('Error al eliminar usuario:', error);
+      });
   };
 
-  const GuardarU = (user) => {
-    console.log('Guardando usuario:', user);
-  };
+  const ActualizarU = (user) => {
+    fetch(`http://localhost:5234/api/Usuario`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUsuarios((prev) =>
+          prev.map((u) => (u.cc === user.cc ? data : u))
+        );
+      })
+      .catch((error) => {
+        console.error('Error al actualizar usuario:', error);
+      });
+    };
+    
+      useEffect(() => {
+      const filtrados = usuariosOriginales.filter((u) =>
+      u.cc.toString().includes(busqueda)
+      );
+      setUsuarios(filtrados);
+      }, [busqueda, usuariosOriginales]);
 
   // Estado para el modal
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -130,9 +198,9 @@ const Usuarios = () => {
 
   const confirmarAccion = () => {
     if (accionActual === "delete") {
-      DeleteU(usuarioSeleccionado.id);
+      DeleteU(usuarioSeleccionado.cc);
     } else {
-      GuardarU(usuarioSeleccionado);
+      ActualizarU(usuarioSeleccionado);
     }
     setModalAbierto(false);
   };
@@ -156,20 +224,30 @@ const Usuarios = () => {
       <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4" onSubmit={handleAgregarUsuario}>
         {/*usuario*/}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
-          <label htmlFor="usuario" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Usuario</label>
-          <input type="text" id="usuario" name="usuario" placeholder="Usuario" value={nuevoUsuario.usuario} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <label htmlFor="userName" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Usuario</label>
+          <input type="text" id="userName" name="userName" placeholder="Usuario" value={nuevoUsuario.usuario} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/* Contraseña */}	
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="password" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Contraseña</label>
+          <input type="password" id="password" name="password" placeholder="Contraseña" value={nuevoUsuario.contrasena} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
         {/*CC */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
-          <label htmlFor="id" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">CC</label>
-          <input type="text" id="id" name="id" placeholder="CC" value={nuevoUsuario.id} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <label htmlFor="cc" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">CC</label>
+          <input type="text" id="cc" name="cc" placeholder="CC" value={nuevoUsuario.id} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
         {/*Rol */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="rol" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Rol</label>
-          <input type="text" id="rol" name="rol" placeholder="Rol" value={nuevoUsuario.rol} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <select id="rol" name="rol" value={nuevoUsuario.rol} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition">
+            <option className='bg-gray-600' value="" disabled>Seleccione</option>
+            <option className='bg-gray-600' value="Administrador">Administrador</option>
+            <option className='bg-gray-600' value="Instructor">Instructor</option>
+            <option className='bg-gray-600' value="Recepcionista">Recepcionista</option>
+          </select>
         </div>
 
         {/*Nombres */}
@@ -186,8 +264,8 @@ const Usuarios = () => {
 
         {/*Celular */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
-          <label htmlFor="celular" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Celular</label>
-          <input type="text" id="celular" name="celular" placeholder="Celular" value={nuevoUsuario.celular} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <label htmlFor="telefono" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Celular</label>
+          <input type="text" id="telefono" name="telefono" placeholder="Celular" value={nuevoUsuario.celular} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
         {/*Correo */}
@@ -226,7 +304,7 @@ const Usuarios = () => {
         {/* Buscador */}
         <div className="mb-4 w-full flex flex-col md:flex-row md:items-center gap-2">
           <div className="relative w-full md:w-1/3">
-            <input type="text" placeholder="Buscar usuario..." className="w-full pl-10 pr-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 text-sm"
+            <input type="text" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar usuario..." className="w-full pl-10 pr-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 text-sm"
               style={{ backgroundColor: "var(--sidebar-dark-hover)", borderColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)", outlineColor: "var(--terceary-dark-color)" }} />
             <button type="button" className="absolute inset-y-0 left-0 px-3 flex items-center text-[#F44E1C] hover:text-[#f44e1c66]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -258,13 +336,13 @@ const Usuarios = () => {
             </thead>
             <tbody className="divide-y divide-[#4b607f]">
               {usuarios.map((u, idx) => (
-                <tr key={u.id} className={idx % 2 === 0 ? '' : ''} style={{ backgroundColor: idx % 2 === 0 ? 'var(--sidebar-dark-hover)' : 'var(--secundary-dark-color)' }}>
-                  {['id', 'rol', 'usuario', 'nombres', 'apellidos', 'celular', 'direccion', 'correo'].map((field) => (
+                <tr key={u.cc} className={idx % 2 === 0 ? '' : ''} style={{ backgroundColor: idx % 2 === 0 ? 'var(--sidebar-dark-hover)' : 'var(--secundary-dark-color)' }}>
+                  {['cc', 'rol', 'userName', 'nombres', 'apellidos', 'telefono', 'direccion', 'correo'].map((field) => (
                     <td key={field} className="p-2">
                       <input
                         type="text"
                         value={u[field]}
-                        onChange={(e) => InputCambios(u.id, field, e.target.value)}
+                        onChange={(e) => InputCambios(u.cc, field, e.target.value)}
                         className="w-full rounded px-2 py-1 text-sm text-center"
                         style={{
                           backgroundColor: "var(--secundary-dark-color)",
@@ -293,8 +371,8 @@ const Usuarios = () => {
         {/* Tarjetas para móvil */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
           {usuarios.map((u) => (
-            <div key={u.id} className="space-y-3 p-4 rounded-lg shadow" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)" }}>
-              {['id', 'rol', 'usuario', 'nombres', 'apellidos', 'celular', 'direccion', 'correo'].map((field) => (
+            <div key={u.cc} className="space-y-3 p-4 rounded-lg shadow" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)" }}>
+              {['cc', 'rol', 'userName', 'nombres', 'apellidos', 'telefono', 'direccion', 'correo'].map((field) => (
                 <div key={field} className="text-sm text-center">
                   <label className="block font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>{field}:</label>
                   <input
