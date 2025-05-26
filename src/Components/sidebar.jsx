@@ -10,11 +10,12 @@ import ReportIcon from '../assets/icons/ReportIcon.jsx';
 import ProductIcon from '../assets/icons/ProductIcon.jsx';
 import ExamIcon from '../assets/icons/ExamIcon.jsx';
 import StudentsIcon from '../assets/icons/StudentsIcon.jsx';
+import PrestamoIcon from '../assets/icons/PrestamoIcon.jsx';
 
 
 import Opcion from './Opcion.jsx';
 import { ChevronFirst, ChevronLast, ChevronDown, MoreVertical } from 'lucide-react';
-
+import { text } from 'framer-motion/client';
 
 export const SidebarContext = createContext();
 
@@ -84,6 +85,7 @@ const Sidebar = () => {
                   )}
                 </div>
               </li>
+              <Opcion icon={<PrestamoIcon className="w-5 h-5"/>} title="Inventario" to="/inventario" />
               <Opcion icon={<ExamIcon className="w-5 h-5" />} title="Examenes" to="/examenes" />
               <Opcion icon={<StudentsIcon className="w-5 h-5" />} title="Estudiantes" to="/Estudiantes" />
             </ul>

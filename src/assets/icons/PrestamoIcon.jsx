@@ -4,7 +4,6 @@ const PrestamoIcon = ({ className = "", style = {} }) => {
       viewBox="0 0 512 512"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-       style={{ color: "var(--primary-background-color)", ...style }}
        fill="currentColor"
     >
 
