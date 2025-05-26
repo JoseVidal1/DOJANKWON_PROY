@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 //import AgregarEstudiante from '../Components/AgregarEstudiante.jsx';
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 
 const Estudiante = () => {
-  const [estudiantes, setEstudiantes] = useState([
-    { id: '1001', nombre: 'Juan', apellido: 'Pérez', edad: 20, eps: 'SURA', direccion: 'Calle 123', telefono: '3011234567', correo: 'juan@example.com' }
-  ]);
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [rangos, setRangos] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:5234/api/Rango')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los rangos');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setRangos(data);
+      })
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [accion, setAccion] = useState('');
   const [seleccionado, setSeleccionado] = useState(null);
@@ -18,69 +29,91 @@ const Estudiante = () => {
     id: '',
     nombre: '',
     apellido: '',
-    edad: '',
+    fechaNacimiento: '',
     eps: '',
     direccion: '',
     telefono: '',
     correo: ''
   });
+useEffect(() => {
+    // Cargar usuarios desde la API al montar el componente
+    fetch('http://localhost:5234/api/Estudiante')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los usuarios');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setEstudiantes(data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar usuarios:', error);
+      });
+  }, []);
 
   const handleInputChange = (id, campo, valor) => {
     setEstudiantes(prev => prev.map(est => est.id === id ? { ...est, [campo]: valor } : est));
   };
 
-  // Manejar cambios en el formulario
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setNuevoEst(prev => ({ ...prev, [name]: value }));
-  };
+const handleFormChange = (e) => {
+  const { name, value } = e.target;
+  const nuevoValor =
+    name === 'fechaNacimiento' ? formatearFecha(value) : value;
+
+  setNuevoEst((prev) => ({
+    ...prev,
+    [name]: nuevoValor
+  }));
+};
+
+  function formatearFecha(fecha) {
+  const d = new Date(fecha);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
   // Agregar estudiante desde el formulario
   const handleAgregarEstudiante = (e) => {
     e.preventDefault();
-    if (
-      !nuevoEst.id ||
-      !nuevoEst.nombre ||
-      !nuevoEst.apellido ||
-      !nuevoEst.edad ||
-      !nuevoEst.eps ||
-      !nuevoEst.direccion ||
-      !nuevoEst.telefono ||
-      !nuevoEst.correo
-    ) {
-      alert("Por favor completa todos los campos.");
-      return;
+  const form = e.target;
+
+  const nuevoEst = {
+    id: form.id.value,
+    nombres: form.nombre.value,
+    apellidos: form.apellido.value,
+    fechaNacimiento: form.fechaNacimiento.value,
+    eps: form.eps.value,
+    direccion: form.direccion.value,
+    telefono: form.telefono.value,
+    correo: form.correo.value,
+    idRango: form.rango.value
+  };
+
+  fetch('http://localhost:5234/api/Estudiante', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(nuevoEst),
+})
+  .then(async (response) => {
+    if (!response.ok) {
+      const errorText = await response.text(); // <-- leer texto del backend
+      throw new Error(errorText || 'Error al agregar el estudiante');
     }
-    // Calcular edad a partir de la fecha de nacimiento
-    const nacimiento = new Date(nuevoEst.edad);
-    const hoy = new Date();
-    let edadCalculada = hoy.getFullYear() - nacimiento.getFullYear();
-    const m = hoy.getMonth() - nacimiento.getMonth();
-    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
-      edadCalculada--;
-    }
-    if (nacimiento.getFullYear() >= hoy.getFullYear()) {
-      alert("La fecha de nacimiento no puede ser del año actual o posterior.");
-      return;
-    }
-    if (edadCalculada > 120) {
-      alert("La edad no puede ser mayor a 120 años.");
-      return;
-    }
-    setEstudiantes(prev => [
-      ...prev,
-      { ...nuevoEst, edad: edadCalculada }
-    ]);
-    setNuevoEst({
-      id: '',
-      nombre: '',
-      apellido: '',
-      edad: '',
-      eps: '',
-      direccion: '',
-      telefono: '',
-      correo: ''
-    });
+    return response.json();
+  })
+  .then((data) => {
+    console.log('Estudiante agregado:', data);
+    setEstudiantes((prev) => [...prev, data]);
+    form.reset(); // Limpia el formulario
+  })
+  .catch((error) => {
+    console.error('Error al agregar estudiante:', error.message);
+  });
   };
 
   // campo de buscar
@@ -111,15 +144,52 @@ const Estudiante = () => {
     setEstudianteSeleccionado(estudiante);
     setModalConfirmacionAbierto(true);
   };
-
+const DeleteE=(id)=>{
+  fetch(`http://localhost:5234/api/Estudiante/${id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        setEstudiantes((prev) => prev.filter((e) => e.id !== id));
+      })
+      .catch((error) => {
+        console.error('Error al eliminar estudiante:', error);
+      });
+ };
+ const EditE = (estudiante) => {
+  fetch(`http://localhost:5234/api/Estudiante`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(estudiante),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        const errorText = response.statusText || 'Error al actualizar el estudiante';
+        throw new Error(errorText);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setEstudiantes((prev) =>
+        prev.map((est) => (est.id === estudiante.id ? { ...est, ...data } : est))
+      );
+      setModalConfirmacionAbierto(false);
+    })
+    .catch((error) => {
+      console.error('Error al actualizar estudiante:', error);
+    });
+};
   const confirmarAccion = () => {
     if (accionActual === "delete") {
-      // Lógica para eliminar estudiante
-      setEstudiantes((prev) =>
-        prev.filter((est) => est.id !== estudianteSeleccionado.id)
-      );
+      DeleteE(estudianteSeleccionado.id);
+    }else{
+      EditE(estudianteSeleccionado);
     }
-    setModalConfirmacionAbierto(false);
+    setModalAbierto(false);
   };
 
   return (
@@ -157,7 +227,7 @@ const Estudiante = () => {
         {/* Edad (fecha de nacimiento) */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="edad" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">FECHA NACIMIENTO</label>
-          <input type="date" name="edad" value={nuevoEst.edad} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <input type="date" name="fechaNacimiento" value={nuevoEst.fechaNacimiento} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
         {/* EPS */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
@@ -178,6 +248,16 @@ const Estudiante = () => {
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="correo" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Correo</label>
           <input type="email" name="correo" placeholder="Correo" value={nuevoEst.correo} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
+        {/*Rango*/}
+        <div className="w-full md:flex-1 flex flex-col min-w-0">
+          <label htmlFor="rango" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Rango</label>
+          <select name="rango" className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition">
+            <option className='bg-gray-600' value="" disabled selected>Seleccione un rango</option>
+            {rangos.map((rango) => (
+              <option className='bg-gray-600' key={rango.id} value={rango.id}>{rango.nombre}</option>
+            ))}
+          </select>
         </div>
         <div className="w-full flex justify-center mt-6">
           <button type="submit" className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)"}}>
@@ -223,6 +303,8 @@ const Estudiante = () => {
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Dirección</th>
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Teléfono</th>
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Correo</th>
+              <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Grupo</th>
+              <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Rango</th>
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Acciones</th>
             </tr>
           </thead>
@@ -231,14 +313,16 @@ const Estudiante = () => {
             {estudiantes.filter(est => Object.values(est).some(valor => typeof valor === 'string' && valor.toLowerCase().includes(busqueda.toLowerCase()))).map(est => (
               <tr key={est.id} style={{ backgroundColor: 'var(--sidebar-dark-hover)' }}>
                 <td className="p-2">{est.id}</td>
-                <td className="p-2">{est.nombre}</td>
-                <td className="p-2">{est.apellido}</td>
+                <td className="p-2">{est.nombres}</td>
+                <td className="p-2">{est.apellidos}</td>
                 <td className="p-2">{est.edad}</td>
                 {['eps','direccion','telefono','correo'].map(c => (
                   <td key={c} className="p-1">
                     <input type="text" value={est[c]} onChange={e => handleInputChange(est.id, c, e.target.value)} className="w-full rounded px-2 py-1 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} />
                   </td>
                 ))}
+                <td className="p-2">{est.idGrupoNavigation.nombre}</td> 
+                <td className="p-2">{est.idRangoNavigation.nombre}</td>
                 <td className="p-3 flex justify-center space-x-2">
                   <button onClick={() => manejarAccion("edit", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
                   <button onClick={() => manejarAccion("delete", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
@@ -254,13 +338,21 @@ const Estudiante = () => {
         {/*filtrado Est*/}
         {estudiantes.filter(est => Object.values(est).some(valor => typeof valor === 'string' && valor.toLowerCase().includes(busqueda.toLowerCase()))).map(est => (
           <div key={est.id} className="space-y-2 p-4 rounded-lg shadow" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)" }}>
-            {['id','nombre','apellido','edad'].map(c => (
+            {['id','nombres','apellidos','edad'].map(c => (
               <div key={c}><label className="block text-sm font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>{c}:</label><div className="text-center text-sm">{est[c]}</div></div>
             ))}
             {['eps','direccion','telefono','correo'].map(c => (
               <div key={c}><label className="block text-sm font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>{c}:</label>
               <input type="text" value={est[c]} onChange={e => handleInputChange(est.id, c, e.target.value)} className="w-full rounded px-2 py-1 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></div>
             ))}
+            <div>
+              <label className="block text-sm font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>Grupo:</label>
+              <div className="text-center text-sm">{est.idGrupoNavigation.nombre}</div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold capitalize" style={{ color: "var(--secundary-text-color)" }}>Rango:</label>
+              <div className="text-center text-sm">{est.idRangoNavigation.nombre}</div>
+            </div>
             <div className="flex justify-center space-x-2 pt-2">
               <button onClick={() => manejarAccion("edit", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
               <button onClick={() => manejarAccion("delete", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>
