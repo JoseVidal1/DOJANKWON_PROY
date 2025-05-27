@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 
 const Inventario = () => {
 
-  const [productos, setProductos] = useState([
+  const [productos, setProductos] = useState([/*
     { id: 1, nombre: 'Peto de combate', cantidad: 15 }, 
     { id: 2, nombre: 'Paleta de entrenamiento', cantidad: 0 }, 
-    { id: 3, nombre: 'Casco protector', cantidad: 8 }
+    { id: 3, nombre: 'Casco protector', cantidad: 8 }*/
   ]);
 
   const [formulario, setFormulario] = useState({ id: '', nombre: '', cantidad: '' });
@@ -21,29 +21,53 @@ const Inventario = () => {
     const { name, value } = e.target;
     setFormulario(prev => ({ ...prev, [name]: value }));
   };
-
-  //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-  const generarNuevoId = () => Math.max(...productos.map(p => p.id), 0) + 1;
+  useEffect(() => {
+    // Cargar usuarios desde la API al montar el componente
+    fetch('http://localhost:5234/api/Articulo')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.text() || 'Error al cargar articulos');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProductos(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const registrarArticulo = e => {
     e.preventDefault();
-    const { id, nombre, cantidad } = formulario;
-    if (!nombre || !cantidad) return alert('Por favor, completa todos los campos');
-
-    const cantidadNum = parseInt(cantidad);
-    const nombreExistente = productos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
-
-    if (editando) {
-      setProductos(prev => prev.map(p => p.id === parseInt(id) ? { ...p, nombre, cantidad: cantidadNum } : p));
-      setEditando(false);
-    } else if (nombreExistente) {
-      setProductos(prev => prev.map(p => p.nombre.toLowerCase() === nombre.toLowerCase() ? { ...p, cantidad: p.cantidad + cantidadNum } : p));
-    } else {
-      setProductos(prev => [...prev, { id: generarNuevoId(), nombre, cantidad: cantidadNum }]);
+    const nuevoProducto = {
+      nombre: formulario.nombre,
+      cantidad: parseInt(formulario.cantidad),
+      disponibles: parseInt(formulario.cantidad) // Inicialmente, disponibles es igual a la cantidad
+    };
+    fetch('http://localhost:5234/api/Articulo', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(nuevoProducto), 
+})
+  .then(async (response) => {
+    if (!response.ok) {
+      const errorText = await response.text(); // <-- leer texto del backend
+      throw new Error(errorText || 'Error al agregar el articulo');
     }
-
-    setFormulario({ id: '', nombre: '', cantidad: '' });
-  };
+    return response.json();
+  })
+  .then((data) => {
+    console.log('Articulo agregado:', data);
+    setProductos((prev) => [...prev, data]);
+    form.reset(); // Limpia el formulario
+  })
+  .catch((error) => {
+    console.error('Error al agregar estudiante:', error.message);
+  });
+}
 
     //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
@@ -52,7 +76,26 @@ const Inventario = () => {
     setEditando(true);
   };
 
-  const eliminarProducto = id => setProductos(prev => prev.filter(p => p.id !== id));
+  const eliminarProducto=(id) => {
+    fetch(`http://localhost:5234/api/Articulo/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text(); // <-- leer texto del backend
+          throw new Error(errorText || 'Error al eliminar el articulo');
+        }
+        setProductos((prev) => prev.filter(p => p.id !== id));
+        console.log('Articulo eliminado:', id);
+      })
+      .catch((error) => {
+        console.error('Error al eliminar articulo:', error.message);
+      });
+  };
+
 
   const manejarAccion = (a, p) => {
     setAccionActual(a);
@@ -143,7 +186,7 @@ const Inventario = () => {
                   <td className="p-2" style={{ color: "var(--text-dark-color)" }}>{p.id}</td>
                   <td className="p-2" style={{ color: "var(--text-dark-color)" }}>{p.nombre}</td>
                   <td className="p-2" style={{ color: "var(--text-dark-color)" }}>{p.cantidad}</td>
-                  <td className="p-2" style={{ color: "var(--text-dark-color)" }}>{Math.max(0, p.cantidad - 2)}</td>
+                  <td className="p-2" style={{ color: "var(--text-dark-color)" }}>{p.disponibles}</td>
                   <td className="p-3 flex justify-center space-x-2">
                     <button onClick={() => manejarAccion("edit", p)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar producto">
                         <EditIcon className="w-5 h-5" />
@@ -165,7 +208,7 @@ const Inventario = () => {
               <div className="text-sm text-center"><label className="block font-semibold" style={{ color: "var(--secundary-text-color)" }}>ID:</label><span>{p.id}</span></div>
               <div className="text-sm text-center"><label className="block font-semibold" style={{ color: "var(--secundary-text-color)" }}>Nombre:</label><span>{p.nombre}</span></div>
               <div className="text-sm text-center"><label className="block font-semibold" style={{ color: "var(--secundary-text-color)" }}>Cantidad:</label><span>{p.cantidad}</span></div>
-              <div className="text-sm text-center"><label className="block font-semibold" style={{ color: "var(--secundary-text-color)" }}>Disponibles:</label><span>{Math.max(0, p.cantidad - 2)}</span></div>
+              <div className="text-sm text-center"><label className="block font-semibold" style={{ color: "var(--secundary-text-color)" }}>Disponibles:</label><span>{p.disponibles}</span></div>
               <div className="flex justify-center space-x-2 pt-2">
                 <button onClick={() => manejarAccion("delete", p)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto">
                     <DeleteIcon className="w-5 h-5" />
