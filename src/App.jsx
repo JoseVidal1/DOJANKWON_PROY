@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion'; // Para animaciones suaves
 
 //import Login from './page/Login';
+import Login from "./page/Login";
 import Home from './page/Home';
 import Usuarios from './page/Usuarios';
 import Pagos from './page/Pagos';
@@ -13,11 +14,16 @@ import Examenes from './page/Examenes';
 import Estudiantes from './page/Estudiantes';
 import ListaPrestamo from './page/ListaPrestamos';
 import Invenario from './page/Inventario';
+import ProtectedRoute from "./Auth/ProtectedRoute";
+import { useAuth } from "./Auth/AuthContext";
+import Error404 from "./page/Error";
 
 
 function App() {
+  const { isAuth } = useAuth();
   return (
     <BrowserRouter>
+    {isAuth && ( 
     <div className="flex">
       <Sidebar className="z-50"/>
       <main className="relative flex-1 p-6 transition-all duration-300 lg:w-[77%] bg-[#111117] text-white overflow-hidden">
@@ -29,18 +35,27 @@ function App() {
         {/* Contenido centrado entre las lineas verticales */}
         <div className="relative z-30 px-6 lg:px-8">
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/usuarios" element={<Usuarios />} />
-      <Route path="/pagos" element={<Pagos />} />
-      <Route path="/prestamos" element={<Prestamos />} />
-      <Route path="/inventario" element={<Invenario />} />
-      <Route path="/listaprestamo" element={<ListaPrestamo />} />
-      <Route path="/examenes" element={<Examenes />} />
-      <Route path="/estudiantes" element={<Estudiantes />} />
+      <Route path="/" element={<ProtectedRoute> <Home /> </ProtectedRoute>} />
+      <Route path="/usuarios" element={<ProtectedRoute> <Usuarios /> </ProtectedRoute>} />
+      <Route path="/pagos" element={<ProtectedRoute> <Pagos /> </ProtectedRoute>} />
+      <Route path="/prestamos" element={<ProtectedRoute> <Prestamos /> </ProtectedRoute>} />
+      <Route path="/inventario" element={<ProtectedRoute> <Invenario /> </ProtectedRoute>} />
+      <Route path="/listaprestamo" element={<ProtectedRoute> <ListaPrestamo /> </ProtectedRoute>} />
+      <Route path="/examenes" element={<ProtectedRoute> <Examenes /> </ProtectedRoute>} />
+      <Route path="/estudiantes" element={<ProtectedRoute> <Estudiantes /> </ProtectedRoute>} />
     </Routes>
   </div>
-</main>
-    </div>
+  </main>
+  </div>
+  )}
+  {!isAuth && (
+    <Routes>
+      <Route path="/" element={<ProtectedRoute> <Home /> </ProtectedRoute>}>
+      </Route>
+      <Route path="/login" element={<Login />}/>
+      <Route path="*" element={<Error404 />}/>
+    </Routes>
+  )}
   </BrowserRouter>
   );
 }

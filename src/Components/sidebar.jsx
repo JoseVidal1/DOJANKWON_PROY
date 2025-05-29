@@ -1,8 +1,6 @@
-import React, { useState, useEffect, createContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, createContext, useRef } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import imagen from '../assets/react.svg';
-import { NavLink } from 'react-router-dom';
-
 
 import HomeIcon from '../assets/icons/HomeIcon.jsx';
 import UserIcon from '../assets/icons/UserIcon.jsx';
@@ -12,37 +10,53 @@ import ExamIcon from '../assets/icons/ExamIcon.jsx';
 import StudentsIcon from '../assets/icons/StudentsIcon.jsx';
 import PrestamoIcon from '../assets/icons/PrestamoIcon.jsx';
 
-
 import Opcion from './Opcion.jsx';
-import { ChevronFirst, ChevronLast, ChevronDown, MoreVertical } from 'lucide-react';
-import { text } from 'framer-motion/client';
+import { ChevronFirst, Settings, ChevronLast, ChevronDown, MoreVertical, Power } from 'lucide-react';
+import { useAuth } from "../Auth/AuthContext.jsx";
 
 export const SidebarContext = createContext();
 
 const Sidebar = () => {
-
   const [isMobile, setIsMobile] = useState(false);
   const [expanded, setExpanded] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
-  {/* Media query para detectar si es celular*/ }
+  const menuRef = useRef(null);
+
+  const base = "relative flex items-center py-2 px-3 my-1 font-medium rounded-full cursor-pointer transition-colors group";
+  const active = "bg-[var(--sidebar-dark-hover)] text-[#e8d8c9]";
+  const inactive = "bg-[var(--primary-dark-color-transparent)] text-[#e8d8c9] hover:bg-[var(--sidebar-dark-hover)] hover:text-[#e8d8c9]";
+
+  const handleLogout = () => {
+    console.log("Sesión cerrada");
+  };
+
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 1024px)'); // lg breakpoint
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
     const handleChange = () => setIsMobile(mediaQuery.matches);
-    handleChange(); // set inicial
+    handleChange();
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <>
-      {/* Fondo difuminado en moviles */}
       {isMobile && expanded && (
         <div className="fixed inset-0 backdrop-blur-md z-40" />
       )}
 
-
-      {/* Sidebar */}
       <aside className={`${isMobile && expanded ? 'fixed z-50 inset-y-0 left-0' : 'sticky'} top-0 h-[100dvh] min-h-screen transition-all duration-300${expanded ? "w-64" : "w-16"}`}>
         <nav className="h-full flex flex-col border-0 shadow-xl" style={{ backgroundColor: "var(--secundary-dark-color)" }}>
           <div className={`p-4 pb-2 flex items-center transition-all duration-300 ${expanded ? "justify-between" : "justify-center"}`}>
@@ -59,7 +73,6 @@ const Sidebar = () => {
           </div>
 
           <SidebarContext.Provider value={{ expanded }}>
-            {/*Opciones*/}
             <ul className="flex-1 px-3 pt-11">
               <Opcion icon={<HomeIcon className="w-5 h-5 " />} title="Inicio" to="/" />
               <Opcion icon={<UserIcon className="w-5 h-5" />} title="Usuarios" to="/usuarios" />
@@ -75,7 +88,7 @@ const Sidebar = () => {
                   {showDropdown && expanded && (
                     <ul className="ml-12 mt-1 space-y-1 text-sm">
                       <li>
-                        <NavLink to="/listaprestamo" className="block hover:underline text-[var(--text-dark-color)] transition-colors">Lista Prestamo</NavLink>
+                        <NavLink to="/listaprestamo" className="block hover:underline text-[#e8d8c9] transition-colors">Lista Prestamo</NavLink>
                       </li>
                     </ul>
                   )}
@@ -85,6 +98,24 @@ const Sidebar = () => {
               <Opcion icon={<ExamIcon className="w-5 h-5" />} title="Examenes" to="/examenes" />
               <Opcion icon={<StudentsIcon className="w-5 h-5" />} title="Estudiantes" to="/Estudiantes" />
             </ul>
+
+            <div ref={menuRef} className={`${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'} transition-all duration-200 origin-bottom-right`}>  
+              <div className="flex flex-col text-center ml-2">
+                <button className={`${base} ${isActive ? active : inactive}`}>
+                  <span className={`transition-all ${expanded ? "mr-3" : "mx-auto"}`}>
+                    <Settings size={20} className='' />
+                  </span>
+                  <span className={`transition-all overflow-hidden ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}>Configuración</span>
+                </button>
+
+                <button className={`${base} ${isActive ? active : inactive}`} onClick={handleLogout}>
+                  <span className={`transition-all ${expanded ? "mr-3" : "mx-auto"}`}>
+                    <Power size={20} />
+                  </span>
+                  <span className={`transition-all overflow-hidden ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}>Cerrar Sesión</span>
+                </button>
+              </div>
+            </div>
           </SidebarContext.Provider>
 
           <div className={`border-t flex items-center p-3 transition-all duration-300 ${expanded ? "gap-3" : "justify-center"}`} style={{ borderTopColor: "var(--primary-dark-color)" }}>
@@ -92,10 +123,12 @@ const Sidebar = () => {
             <div className={`overflow-hidden transition-all duration-300 ${expanded ? "w-52 ml-3" : "w-0"}`}>
               <div className="flex items-center justify-between leading-4">
                 <div>
-                  <h4 className="font-semibold" style={{ color: "var(--text-dark-color)" }}>Alvaro Vidal Martinez</h4>
+                  <h4 className="font-semibold" style={{ color: "#e8d8c9" }}>Alvaro Vidal Martinez</h4>
                   <span className="text-xs" style={{ color: "var(--accent-dark-color)" }}>AvidalMartinez@gmail.com</span>
                 </div>
-                <MoreVertical size={20} className="ml-2 shrink-0" style={{ color: "var(--accent-dark-color)" }} />
+                 <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={isMenuOpen} className="focus:outline-none">
+                  <MoreVertical size={20} className="ml-2 shrink-0 text-accent-dark hover:text-accent transition-colors duration-200" style={{ color: "var(--accent-dark-color)" }}/>
+                </button>
               </div>
             </div>
           </div>

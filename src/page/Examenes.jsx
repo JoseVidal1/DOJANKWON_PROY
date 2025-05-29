@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DeleteIcon } from 'lucide-react';
+import { DeleteIcon, FileText  } from 'lucide-react';
 import { form, s, tr } from 'framer-motion/client';
 
 const Examenes = () => {
@@ -16,44 +16,44 @@ const Examenes = () => {
     teorico: ''
   });
   const [estudiantes, setEstudiantes] = useState([]);
-const listaEstudiantes = estudiantes.map(est => ({
-  id: est.id,
-  nombreCompleto: est.nombres + " " + est.apellidos
-}));  // Autocompletado
+  const listaEstudiantes = estudiantes.map(est => ({
+    id: est.id,
+    nombreCompleto: est.nombres + " " + est.apellidos
+  }));  // Autocompletado
   const [sugerencias, setSugerencias] = useState([]);
   const [indiceSugerencia, setIndiceSugerencia] = useState(-1);
   useEffect(() => {
-      // Cargar usuarios desde la API al montar el componente
-      fetch('http://localhost:5234/api/Examen')
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Error al cargar los examenes');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setExamenes(data);
-        })
-        .catch((error) => {
-          console.error('Error al cargar examenes:', error);
-        });
-    }, []);
-      useEffect(() => {
-      // Cargar usuarios desde la API al montar el componente
-      fetch('http://localhost:5234/api/Estudiante')
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Error al cargar los estudiantes');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setEstudiantes(data);
-        })
-        .catch((error) => {
-          console.error('Error al cargar estudiantes:', error);
-        });
-    }, []);
+    // Cargar usuarios desde la API al montar el componente
+    fetch('http://localhost:5234/api/Examen')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los examenes');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setExamenes(data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar examenes:', error);
+      });
+  }, []);
+  useEffect(() => {
+    // Cargar usuarios desde la API al montar el componente
+    fetch('http://localhost:5234/api/Estudiante')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los estudiantes');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setEstudiantes(data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar estudiantes:', error);
+      });
+  }, []);
 
 
   // Referencia Autocompletador
@@ -97,7 +97,7 @@ const listaEstudiantes = estudiantes.map(est => ({
     const nuevoExamen = {
       estudianteId: formData.estudianteE,
       calentamiento: formData.calentamiento,
-      tecMano: formData.tecMano, 
+      tecMano: formData.tecMano,
       tecPatada: formData.tecPatada,
       tecEspecial: formData.tecEspe,
       combate: formData.combate,
@@ -170,68 +170,68 @@ const listaEstudiantes = estudiantes.map(est => ({
             <div className="w-full flex justify-center">
               <div ref={autoRef} className="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex flex-col relative">
                 <label htmlFor="estudianteE" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase text-center mb-1">Estudiante</label>
- <input
-  type="text"
-  id="estudianteE"
-  name="estudianteE"
-  autoComplete="off"
-  placeholder="Nombre del estudiante"
-  required
-  className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-2 text-center text-base"
-  value={
-    inputEstudiante
-  }
-  onChange={e => {
-    const input = e.target.value;
-    const filtrados = listaEstudiantes.filter(est =>
-      est.nombreCompleto.toLowerCase().includes(input.toLowerCase())
-    );
-    setSugerencias(filtrados);
-    setIndiceSugerencia(-1);
-    setInputEstudiante(input);
-    setFormData({ ...formData, estudianteE: '' });
-  }}
-onKeyDown={e => {
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    setIndiceSugerencia(prev => Math.min(prev + 1, sugerencias.length - 1));
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    setIndiceSugerencia(prev => Math.max(prev - 1, 0));
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (indiceSugerencia >= 0 && sugerencias.length > 0) {
-      const seleccionado = sugerencias[indiceSugerencia];
-      setFormData({ ...formData, estudianteE: seleccionado.id });
-      setInputEstudiante(seleccionado.nombreCompleto);
-    } else if (sugerencias.length > 0) {
-      const seleccionado = sugerencias[0];
-      setFormData({ ...formData, estudianteE: seleccionado.id });
-      setInputEstudiante(seleccionado.nombreCompleto);
-    }
-    setSugerencias([]);
-    setIndiceSugerencia(-1);
-  }
-}}
-/>
-{ sugerencias.length > 0 && (
-  <ul className="absolute top-full z-10 w-full bg-white text-black rounded shadow">
-    {sugerencias.map((est, i) => (
-      <li
-        key={est.id}
-        className={`p-2 cursor-pointer ${i === indiceSugerencia ? 'bg-gray-200' : ''}`}
-        onClick={() => {
-          setInputEstudiante(est.nombreCompleto);
-          setFormData({ ...formData, estudianteE: est.id });
-          setSugerencias([]);
-          setIndiceSugerencia(-1);
-        }}
-      >
-        {est.nombreCompleto}
-      </li>
-    ))}
-  </ul>
-)}
+                <input
+                  type="text"
+                  id="estudianteE"
+                  name="estudianteE"
+                  autoComplete="off"
+                  placeholder="Nombre del estudiante"
+                  required
+                  className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-2 text-center text-base"
+                  value={
+                    inputEstudiante
+                  }
+                  onChange={e => {
+                    const input = e.target.value;
+                    const filtrados = listaEstudiantes.filter(est =>
+                      est.nombreCompleto.toLowerCase().includes(input.toLowerCase())
+                    );
+                    setSugerencias(filtrados);
+                    setIndiceSugerencia(-1);
+                    setInputEstudiante(input);
+                    setFormData({ ...formData, estudianteE: '' });
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      setIndiceSugerencia(prev => Math.min(prev + 1, sugerencias.length - 1));
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      setIndiceSugerencia(prev => Math.max(prev - 1, 0));
+                    } else if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (indiceSugerencia >= 0 && sugerencias.length > 0) {
+                        const seleccionado = sugerencias[indiceSugerencia];
+                        setFormData({ ...formData, estudianteE: seleccionado.id });
+                        setInputEstudiante(seleccionado.nombreCompleto);
+                      } else if (sugerencias.length > 0) {
+                        const seleccionado = sugerencias[0];
+                        setFormData({ ...formData, estudianteE: seleccionado.id });
+                        setInputEstudiante(seleccionado.nombreCompleto);
+                      }
+                      setSugerencias([]);
+                      setIndiceSugerencia(-1);
+                    }
+                  }}
+                />
+                {sugerencias.length > 0 && (
+                  <ul className="absolute top-full z-10 w-full bg-white text-black rounded shadow">
+                    {sugerencias.map((est, i) => (
+                      <li
+                        key={est.id}
+                        className={`p-2 cursor-pointer ${i === indiceSugerencia ? 'bg-gray-200' : ''}`}
+                        onClick={() => {
+                          setInputEstudiante(est.nombreCompleto);
+                          setFormData({ ...formData, estudianteE: est.id });
+                          setSugerencias([]);
+                          setIndiceSugerencia(-1);
+                        }}
+                      >
+                        {est.nombreCompleto}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
@@ -277,6 +277,15 @@ onKeyDown={e => {
 
       {/* Tabla de resultados */}
       <div className="p-5 mt-10">
+
+      {/* botn DE pdf */}
+      <div className="mb-4 flex justify-start">
+        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-[#F44E1C] hover:bg-[#F44E1C66] text-white font-semibold rounded shadow"
+         onClick={() => { console.log('Generar PDF');}}>
+          <FileText size={20}/> Generar PDF
+        </button>
+      </div>
+
         {/* Tabla escritorio */}
         <div className="overflow-auto rounded-lg shadow hidden md:block">
           <table className="w-full text-center shadow-lg border border-[color:var(--terceary-dark-color)]">
@@ -315,7 +324,7 @@ onKeyDown={e => {
             const reprobado = item.notaFinal < 60;
             return (
               <div key={index} className="rounded-lg shadow p-4 space-y-2" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)" }}>
-                <div className='text-color-white'><b>Estudiante:</b> {item.estudiante.nombres+" "+item.estudiante.apellidos}</div>
+                <div className='text-color-white'><b>Estudiante:</b> {item.estudiante.nombres + " " + item.estudiante.apellidos}</div>
                 <div><b>Calentamiento:</b> <span className="text-white">{item.calentamiento}</span></div>
                 <div><b>Mano:</b> <span className="text-white">{item.tecMano}</span></div>
                 <div><b>Patada:</b> <span className="text-white">{item.tecPatada}</span></div>
