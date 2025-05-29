@@ -75,11 +75,7 @@ const Sidebar = () => {
                   {showDropdown && expanded && (
                     <ul className="ml-12 mt-1 space-y-1 text-sm">
                       <li>
-                        <NavLink to="/historialPrestamo" className="block hover:underline text-[var(--text-dark-color)] transition-colors">Historial</NavLink>
-                      </li>
-
-                      <li>
-                        <NavLink to="/devoluciones" className="block hover:underline text-[var(--text-dark-color)] transition-colors">Devoluciones</NavLink>
+                        <NavLink to="/listaprestamo" className="block hover:underline text-[var(--text-dark-color)] transition-colors">Lista Prestamo</NavLink>
                       </li>
                     </ul>
                   )}
