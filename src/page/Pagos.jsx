@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, User, Calendar, CreditCard } from 'lucide-react';
 
 const Pagos = () => {
   const [listaPagos, setListaPagos] = useState([
-    { id: 'USR001', nombreUsuario: 'María González', fechaPago: '2024-05-15', fechaVencimiento: '2024-05-20', estadoPago: 'pagado' },
+    /*{ id: 'USR001', nombreUsuario: 'María González', fechaPago: '2024-05-15', fechaVencimiento: '2024-05-20', estadoPago: 'pagado' },
     { id: 'USR002', nombreUsuario: 'Carlos Rodríguez', fechaPago: null, fechaVencimiento: '2024-05-25', estadoPago: 'proximo_vencer' },
     { id: 'USR003', nombreUsuario: 'Ana Martínez', fechaPago: null, fechaVencimiento: '2024-05-30', estadoPago: 'pendiente' },
     { id: 'USR004', nombreUsuario: 'Luis Fernández', fechaPago: null, fechaVencimiento: '2024-05-10', estadoPago: 'mora' },
     { id: 'USR005', nombreUsuario: 'Patricia López', fechaPago: '2024-05-18', fechaVencimiento: '2024-05-22', estadoPago: 'pagado' },
-    { id: 'USR006', nombreUsuario: 'Roberto Silva', fechaPago: null, fechaVencimiento: '2024-05-26', estadoPago: 'proximo_vencer' }
+    { id: 'USR006', nombreUsuario: 'Roberto Silva', fechaPago: null, fechaVencimiento: '2024-05-26', estadoPago: 'proximo_vencer' }*/
   ]);
 
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('todos');
+
+useEffect(() => {
+    fetch('http://localhost:5234/api/Pago')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al cargar los pagos');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setListaPagos(data);
+      })
+      .catch((error) => {
+        console.error('Error al cargar pagos:', error);
+      });
+  }, []);
 
   const obtenerConfiguracionEstado = (estadoPago) => {
     if (estadoPago === 'pagado') return { clasesCSS: 'bg-green-100 text-green-800 border-green-200', textoMostrar: 'Pagado', icono: '✓' };
@@ -28,17 +44,17 @@ const Pagos = () => {
   };
 
   const deberMostrarBotonNotificacion = (estadoPago) => estadoPago !== 'pagado';
-  const contarPagosPorEstado = (estadoBuscado) => listaPagos.filter(p => p.estadoPago === estadoBuscado).length;
+  const contarPagosPorEstado = (estadoBuscado) => listaPagos.filter(p => p.estado === estadoBuscado).length;
 
   const CartaPago = ({ datosUsuario }) => {
-    const conf = obtenerConfiguracionEstado(datosUsuario.estadoPago);
+    const conf = obtenerConfiguracionEstado(datosUsuario.estado);
     return (
       <div className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border overflow-hidden" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--terceary-dark-color)" }}>
         <div className="bg-gradient-to-r from-[#18181e] to-[#4b607f] p-4 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <User className="w-5 h-5" />
-              <span className="font-semibold">{datosUsuario.nombreUsuario}</span>
+              <span className="font-semibold">{datosUsuario.idEstudianteNavigation.nombres}</span>
             </div>
             <span className="text-sm opacity-90">ID: {datosUsuario.id}</span>
           </div>
@@ -148,7 +164,7 @@ const Pagos = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listaPagos
-            .filter(p => p.nombreUsuario.toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            .filter(p => p.idEstudianteNavigation.nombres.toLowerCase().includes(terminoBusqueda.toLowerCase()))
             .filter(p => estadoFiltro === 'todos' || p.estadoPago === estadoFiltro)
             .map((datosUsuario) => (
               <CartaPago key={datosUsuario.id} datosUsuario={datosUsuario} />
