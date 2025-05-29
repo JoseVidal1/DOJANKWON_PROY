@@ -149,6 +149,29 @@ const Examenes = () => {
     setExamenes(actualizados);
   };
 
+  const handleDownload = () => {
+    fetch("http://localhost:5234/api/Examen/pdf-examenes", {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No se pudo descargar el PDF");
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "examenes.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch((error) => {
+        console.error("Error al descargar el PDF:", error);
+      });
+  }
   return (
     <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
       {/* Encabezado */}
@@ -280,11 +303,14 @@ const Examenes = () => {
 
       {/* botn DE pdf */}
       <div className="mb-4 flex justify-start">
-        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-[#F44E1C] hover:bg-[#F44E1C66] text-white font-semibold rounded shadow"
-         onClick={() => { console.log('Generar PDF');}}>
-          <FileText size={20}/> Generar PDF
-        </button>
-      </div>
+      <button
+        type="button"
+        className="flex items-center gap-2 px-4 py-2 bg-[#F44E1C] hover:bg-[#F44E1C66] text-white font-semibold rounded shadow"
+        onClick={handleDownload}
+      >
+        <FileText size={20} /> Generar PDF
+      </button>
+    </div>
 
         {/* Tabla escritorio */}
         <div className="overflow-auto rounded-lg shadow hidden md:block">
