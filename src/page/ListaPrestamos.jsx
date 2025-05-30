@@ -1,35 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ListaPrestamos = () => {
   const [prestamos, setPrestamos] = useState([
-    {
-      id: 1,
-      estudiante: "Carlos Ramírez",
-      fechaEntrega: "2025-05-01",
-      fechaDevolucion: "2025-05-10",
-      productos: [
-        { nombre: "Balón", cantidad: 2 },
-        { nombre: "Raqueta", cantidad: 3 }
-      ],
-      estado: "Prestado"
-    },
-    {
-      id: 2,
-      estudiante: "Laura Pérez",
-      fechaEntrega: "2025-04-25",
-      fechaDevolucion: "2025-05-05",
-      productos: [
-        { nombre: "Gorra", cantidad: 1 }
-      ],
-      estado: "Devuelto"
-    }
   ]);
 
-  const reportarDevolucion = (id) => {
-    setPrestamos(prev =>
-      prev.map(p => p.id === id ? { ...p, estado: "Devuelto" } : p)
-    );
-  };
+  useEffect(() => {
+   fetch("http://localhost:5234/api/Prestamo")
+      .then(response => response.json())
+      .then(data => {
+        setPrestamos(data);
+      })
+      .catch(error => {
+        console.error("Error fetching prestamos:", error);
+      } );
+   }
+  , []);
+const reportarDevolucion = (prestamoId) => {
+  fetch(`http://localhost:5234/api/Prestamo/devolver/${prestamoId}`, {
+    method: 'PUT',
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al reportar la devolución');
+      }
+      return response.text(); // la API responde con texto
+    })
+    .then(() => {
+      setPrestamos(prestamos.map(p => p.id === prestamoId ? { ...p, estado: "Devuelto" } : p));
+      alert("Devolución reportada correctamente");
+    })
+    .catch(error => {
+      console.error("Error reporting return:", error);
+      alert("Error al reportar la devolución");
+    });
+};
+
 
   return (
     <div className='relative pt-8 pb-4' style={{ backgroundColor: "var(--primary-dark-color)" }}>
@@ -56,7 +61,7 @@ const ListaPrestamos = () => {
               <tr>
                 <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">ID Alquiler</th>
                 <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Estudiante</th>
-                <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Fecha Entrega</th>
+                <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Fecha Prestamo</th>
                 <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Fecha Devolución</th>
                 <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Productos Prestados</th>
                 <th className="p-3 text-sm font-semibold text-[var(--text-dark-color)]">Estado</th>
@@ -67,19 +72,19 @@ const ListaPrestamos = () => {
               {prestamos.map(p => (
                 <tr key={p.id} style={{ backgroundColor: 'var(--sidebar-dark-hover)' }}>
                   <td className="p-2 text-[var(--primary-background-color)]">{p.id}</td>
-                  <td className="p-2 text-[var(--primary-background-color)]">{p.estudiante}</td>
-                  <td className="p-2 text-[var(--primary-background-color)]">{p.fechaEntrega}</td>
+                  <td className="p-2 text-[var(--primary-background-color)]">{p.estudiante.nombres+" "+p.estudiante.apellidos}</td>
+                  <td className="p-2 text-[var(--primary-background-color)]">{p.fechaPrestamo}</td>
                   <td className="p-2 text-[var(--primary-background-color)]">{p.fechaDevolucion}</td>
                   <td className="p-2 text-[var(--primary-background-color)]">
                     <ul className="list-disc pl-5 text-left">
-                      {p.productos.map((prod, idx) => (
-                        <li key={idx}>{prod.cantidad} × {prod.nombre}</li>
-                      ))}
+                      {p.detalles.map((d => (
+                    <li key={d.id}>{d.cantidad} × {d.articulo.nombre}</li>
+                  )))}
                     </ul>
                   </td>
                   <td className="p-2 text-[var(--primary-background-color)]">{p.estado}</td>
                   <td className="p-2">
-                    {p.estado === "Prestado" && (
+                    {p.estado === "En prestamo"  && (
                       <button onClick={() => reportarDevolucion(p.id)} className="px-3 py-1 bg-[#F44E1C] hover:bg-[#F44E1C66] text-white rounded transition">Reportar Devolución</button>
                     )}
                   </td>
@@ -94,21 +99,21 @@ const ListaPrestamos = () => {
           {prestamos.map(p => (
             <div key={p.id} className="space-y-2 p-4 rounded-lg shadow" style={{ backgroundColor: "var(--secundary-dark-color)", color: "var(--text-dark-color)" }}>
               <div><strong className="text-[var(--secundary-text-color)]">ID:</strong> {p.id}</div>
-              <div><strong className="text-[var(--secundary-text-color)]">Estudiante:</strong> {p.estudiante}</div>
+              <div><strong className="text-[var(--secundary-text-color)]">Estudiante:</strong> {p.estudiante.nombres+" "+p.estudiante.apellidos}</div>
               <div><strong className="text-[var(--secundary-text-color)]">Entrega:</strong> {p.fechaEntrega}</div>
               <div><strong className="text-[var(--secundary-text-color)]">Devolución:</strong> {p.fechaDevolucion}</div>
               <div>
                 <strong className="text-[var(--secundary-text-color)]">Productos:</strong>
                 <ul className="list-disc pl-5">
-                  {p.productos.map((prod, idx) => (
-                    <li key={idx}>{prod.cantidad} × {prod.nombre}</li>
-                  ))}
+                  {p.detalles.map((d => (
+                    <li key={d.id}>{d.cantidad} × {d.articulo.nombre}</li>
+                  )))}
                 </ul>
               </div>
               <div><strong className="text-[var(--secundary-text-color)]">Estado:</strong> {p.estado}</div>
-              {p.estado === "Prestado" && (
+              {p.estado === "En prestamo"&& (
                 <div className="pt-2 text-center">
-                  <button onClick={() => reportarDevolucion(p.id)} className="px-3 py-1 bg-green-700 hover:bg-green-900 text-white rounded transition">Reportar Devolución</button>
+                  <button onClick={() => reportarDevolucion(p)} className="px-3 py-1 bg-green-700 hover:bg-green-900 text-white rounded transition">Reportar Devolución</button>
                 </div>
               )}
             </div>
