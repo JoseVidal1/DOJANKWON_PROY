@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import imagen from '../assets/react.svg';
+import imagen from '../assets/UserPrin.svg';
 
 import HomeIcon from '../assets/icons/HomeIcon.jsx';
 import UserIcon from '../assets/icons/UserIcon.jsx';
@@ -29,12 +29,12 @@ const Sidebar = () => {
   const active = "bg-[var(--sidebar-dark-hover)] text-[#e8d8c9]";
   const inactive = "bg-[var(--primary-dark-color-transparent)] text-[#e8d8c9] hover:bg-[var(--sidebar-dark-hover)] hover:text-[#e8d8c9]";
 
-  const { logout } = useAuth();           // 👈 Añade esto
-const navigate = useNavigate();        // 👈 Y esto
+  const { logout } = useAuth();       
+const navigate = useNavigate();  
 
 const handleLogout = () => {
-  logout();                             // 👈 Llama a logout real
-  navigate("/login", { replace: true }); // 👈 Redirige
+  logout();    
+  navigate("/login", { replace: true }); 
 };
 
   useEffect(() => {
@@ -105,13 +105,6 @@ const handleLogout = () => {
 
             <div ref={menuRef} className={`${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'} transition-all duration-200 origin-bottom-right`}>  
               <div className="flex flex-col text-center ml-2">
-                <button className={`${base} ${isActive ? active : inactive}`}>
-                  <span className={`transition-all ${expanded ? "mr-3" : "mx-auto"}`}>
-                    <Settings size={20} className='' />
-                  </span>
-                  <span className={`transition-all overflow-hidden ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}>Configuración</span>
-                </button>
-
                 <button className={`${base} ${isActive ? active : inactive}`} onClick={handleLogout}>
                   <span className={`transition-all ${expanded ? "mr-3" : "mx-auto"}`}>
                     <Power size={20} />
