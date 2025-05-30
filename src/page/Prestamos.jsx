@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from "react";
 import '../Components/input-style.css';
+import { Plus } from "lucide-react";
 import EditIcon from '../assets/icons/EditIcon.jsx';
 import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
@@ -31,6 +32,22 @@ const Prestamos = () => {
   const [indiceCliente, setIndiceCliente] = useState(-1);
   const [indiceArticulo, setIndiceArticulo] = useState(-1);
 
+   const clienteRef = useRef();
+  const articuloRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (clienteRef.current && !clienteRef.current.contains(e.target)) {
+        setSugerenciasCliente([]);
+      }
+      if (articuloRef.current && !articuloRef.current.contains(e.target)) {
+        setSugerenciasArticulo([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleInputAuto = (valor, setValor, lista, setSugerencias, setIndice) => {
     setValor(valor);
     const filtrados = lista.filter((item) => item.toLowerCase().includes(valor.toLowerCase()));
@@ -47,9 +64,36 @@ const Prestamos = () => {
       setSugerencias([]);
     }
   };
-  //==========================================================================
 
-  const [modalPrestamoAbierto, setModalPrestamoAbierto] = useState(false);
+  
+const [cantidad, setCantidad] = useState("");
+const [fechaDevolucion, setFechaDevolucion] = useState("");
+
+const handleRegistrar = () => {
+  if (!cliente || !articulo || !cantidad || !fechaDevolucion) {
+    alert("Completa todos los campos antes de registrar.");
+    return;
+  }
+
+  const nuevoPrestamo = {
+    id: Date.now(),
+    descripcion: `${articulo} - ${cliente}`,
+    cantidad: parseInt(cantidad),
+    fechaDevolucion
+  };
+
+  setProductos(prev => [...prev, nuevoPrestamo]);
+
+  // Limpiar campos
+  setCliente("");
+  setArticulo("");
+  setCantidad("");
+  setFechaDevolucion("");
+  setSugerenciasCliente([]);
+  setSugerenciasArticulo([]);
+};
+
+const [modalPrestamoAbierto, setModalPrestamoAbierto] = useState(false);
   const [productoParaPrestamo, setProductoParaPrestamo] = useState(null);
 
   const handleInputChange = (id, field, value) => {
@@ -94,66 +138,64 @@ const Prestamos = () => {
       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
 
       {/*Form*/}
-      <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4">
-        
-        {/* Filtro Buscar ESTUDIANTE / CLIENTE a prestar */}
-        <div className="w-full md:flex-1 flex flex-col min-w-0 relative">
-        <label htmlFor="cliente" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Cliente a Prestar</label>
-        <input type="text" id="cliente" name="cliente" value={cliente}
-          onChange={(e) => handleInputAuto(e.target.value, setCliente, listaClientes, setSugerenciasCliente, setIndiceCliente)}
-          onKeyDown={(e) => handleKeyDownAuto(e, sugerenciasCliente, indiceCliente, setIndiceCliente, setCliente, setSugerenciasCliente)}
-          placeholder="Buscar cliente..." required className="w-full bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition"/>
-        {sugerenciasCliente.length > 0 && (
-          <ul className="absolute z-10 top-full mt-1 max-h-40 overflow-y-auto w-full bg-[var(--secundary-dark-color)] border border-gray-500 rounded text-white">
-            {sugerenciasCliente.map((sug, idx) => (
-              <li key={idx} onClick={() => { setCliente(sug); setSugerenciasCliente([]); }} className={`px-3 py-1 cursor-pointer hover:bg-[var(--accent-dark-color)] ${idx === indiceCliente ? "bg-[var(--accent-dark-color)]" : ""}`}>
-                {sug}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4">
 
-      {/*Rgtrar Pretamo*/}
+        {/*Cliente*/}
+        <div className="w-full md:flex-1 flex flex-col min-w-0 relative" ref={clienteRef}>
+          <label htmlFor="cliente" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Cliente a Prestar</label>
+          <input type="text" id="cliente" name="cliente" value={cliente}
+            onChange={(e) => handleInputAuto(e.target.value, setCliente, listaClientes, setSugerenciasCliente, setIndiceCliente)}
+            onKeyDown={(e) => handleKeyDownAuto(e, sugerenciasCliente, indiceCliente, setIndiceCliente, setCliente, setSugerenciasCliente)}
+            placeholder="Buscar cliente..." required className="w-full bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          {sugerenciasCliente.length > 0 && (
+            <ul className="absolute z-10 top-full mt-1 max-h-40 overflow-y-auto w-full bg-[var(--secundary-dark-color)] border border-gray-500 rounded text-white">
+              {sugerenciasCliente.map((sug, idx) => (
+                <li key={idx} onClick={() => { setCliente(sug); setSugerenciasCliente([]); }} className={`px-3 py-1 cursor-pointer hover:bg-[var(--accent-dark-color)] ${idx === indiceCliente ? "bg-[var(--accent-dark-color)]" : ""}`}>
+                  {sug}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/*Fecha devolución*/}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="FechaDevolucion" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Fecha de Devolucion</label>
-          <input type="date" id="FechaDevolucion" name="FechaDevolucion" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-[#757d80] p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <input type="date" id="FechaDevolucion" name="FechaDevolucion" value={fechaDevolucion} onChange={(e) => setFechaDevolucion(e.target.value)} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-[#757d80] p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
-        {/* Filtro Buscar Articulo */}
-        <div className="w-full md:flex-1 flex flex-col min-w-0 relative">
-        <label htmlFor="articulo" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Artículo</label>
-        <input type="text" id="articulo" name="articulo" value={articulo}
-          onChange={(e) => handleInputAuto(e.target.value, setArticulo, listaArticulos, setSugerenciasArticulo, setIndiceArticulo)}
-          onKeyDown={(e) => handleKeyDownAuto(e, sugerenciasArticulo, indiceArticulo, setIndiceArticulo, setArticulo, setSugerenciasArticulo)}
-          placeholder="Buscar artículo..." required className="w-full bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition"/>
-        {sugerenciasArticulo.length > 0 && (
-          <ul className="absolute z-10 top-full mt-1 max-h-40 overflow-y-auto w-full bg-[var(--secundary-dark-color)] border border-gray-500 rounded text-white">
-            {sugerenciasArticulo.map((sug, idx) => (
-              <li key={idx} onClick={() => { setArticulo(sug); setSugerenciasArticulo([]); }} className={`px-3 py-1 cursor-pointer hover:bg-[var(--accent-dark-color)] ${idx === indiceArticulo ? "bg-[var(--accent-dark-color)]" : ""}`}>
-                {sug}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        {/*Articulo*/}
+        <div className="w-full md:flex-1 flex flex-col min-w-0 relative" ref={articuloRef}>
+          <label htmlFor="articulo" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Artículo</label>
+          <input type="text" id="articulo" name="articulo" value={articulo}
+            onChange={(e) => handleInputAuto(e.target.value, setArticulo, listaArticulos, setSugerenciasArticulo, setIndiceArticulo)}
+            onKeyDown={(e) => handleKeyDownAuto(e, sugerenciasArticulo, indiceArticulo, setIndiceArticulo, setArticulo, setSugerenciasArticulo)}
+            placeholder="Buscar artículo..." required className="w-full bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          {sugerenciasArticulo.length > 0 && (
+            <ul className="absolute z-10 top-full mt-1 max-h-40 overflow-y-auto w-full bg-[var(--secundary-dark-color)] border border-gray-500 rounded text-white">
+              {sugerenciasArticulo.map((sug, idx) => (
+                <li key={idx} onClick={() => { setArticulo(sug); setSugerenciasArticulo([]); }} className={`px-3 py-1 cursor-pointer hover:bg-[var(--accent-dark-color)] ${idx === indiceArticulo ? "bg-[var(--accent-dark-color)]" : ""}`}>
+                  {sug}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-      {/*Cantidad*/}
+        {/*Cantidad*/}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="cantidad" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">cantidad</label>
-          <input type="text" id="cantidad" name="cantidad" placeholder="Cantidad a Prestar" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <input type="text" id="cantidad" name="cantidad" value={cantidad} onChange={(e) => setCantidad(e.target.value)} placeholder="Cantidad a Prestar" required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
-        {/*bton Registrar prest*/}
-        <div className="w-full flex justify-center mt-6">
-          <button className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{ backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)" }}>
-            <span>Registrar Prestamo</span>
-            <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-              <div className="relative h-full w-8" style={{ backgroundColor: "var(--accent-dark-color" }}></div>
-            </div>
+        {/* Btin registrar prstamo INPUTS*/}
+        <div className="flex items-end">
+          <button type="button" onClick={handleRegistrar} className="flex items-center gap-2 px-4 py-2 rounded-md transition hover:scale-105 duration-300" style={{ backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)" }}>
+            <Plus className="w-5 h-5" />
           </button>
         </div>
       </form>
+
 
       {/*Presentacion tabla*/}
       <h1 className='text-sm ml-2 mt-10 font-bold font-josefin' style={{ color: "var(--accent-dark-color)" }}>taekwondo</h1>
@@ -162,7 +204,15 @@ const Prestamos = () => {
       <hr className="left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
 
       {/*Div Principal Tabl*/}
-      <div className="p-5 mt-10">
+      <div className="p-5 mt-1">
+        <div className="w-full flex justify-end mt-1 mb-5">
+          <button className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{ backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)" }}>
+            <span>Registrar Prestamo</span>
+            <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+              <div className="relative h-full w-8" style={{ backgroundColor: "var(--accent-dark-color" }}></div>
+            </div>
+          </button>
+        </div>
 
         {/*Tabla Pantalla*/}
         <div className="overflow-auto rounded-lg shadow hidden md:block">
@@ -180,7 +230,6 @@ const Prestamos = () => {
                   <td className="p-2">{producto.descripcion}</td>
                   <td className="p-2"><input type="number" value={producto.cantidad} onChange={e => handleInputChange(producto.id, 'cantidad', e.target.value)} className="w-24 rounded px-1 py-0.5 text-sm text-center" style={{ backgroundColor: "var(--secundary-dark-color)", borderColor: "var(--accent-dark-color)", color: "var(--text-dark-color)" }} /></td>
                   <td className="p-3 flex justify-center space-x-2">
-                    <button onClick={() => manejarAccion("edit",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Guardar cambios"><EditIcon className="w-5 h-5" /></button>
                     <button onClick={() => manejarAccion("delete",producto)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar producto"><DeleteIcon className="w-5 h-5" /></button>
                   </td>
                 </tr>

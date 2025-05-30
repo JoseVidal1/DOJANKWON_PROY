@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useRef } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import imagen from '../assets/react.svg';
 
 import HomeIcon from '../assets/icons/HomeIcon.jsx';
@@ -29,9 +29,13 @@ const Sidebar = () => {
   const active = "bg-[var(--sidebar-dark-hover)] text-[#e8d8c9]";
   const inactive = "bg-[var(--primary-dark-color-transparent)] text-[#e8d8c9] hover:bg-[var(--sidebar-dark-hover)] hover:text-[#e8d8c9]";
 
-  const handleLogout = () => {
-    console.log("Sesión cerrada");
-  };
+  const { logout } = useAuth();           // 👈 Añade esto
+const navigate = useNavigate();        // 👈 Y esto
+
+const handleLogout = () => {
+  logout();                             // 👈 Llama a logout real
+  navigate("/login", { replace: true }); // 👈 Redirige
+};
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
