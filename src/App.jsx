@@ -50,7 +50,7 @@ function App() {
   )}
   {!isAuth && (
     <Routes>
-      <Route path="/" element={<ProtectedRoute> <Home /> </ProtectedRoute>}>
+      <Route path="/" element={<ProtectedRoute> <Login /> </ProtectedRoute>}>
       </Route>
       <Route path="/login" element={<Login />}/>
       <Route path="*" element={<Error404 />}/>

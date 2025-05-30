@@ -222,6 +222,8 @@ const Usuarios = () => {
 
       {/* datos para agregar usuario*/}
       <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4" onSubmit={handleAgregarUsuario}>
+
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/*usuario*/}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="userName" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Usuario</label>
@@ -238,7 +240,9 @@ const Usuarios = () => {
           <label htmlFor="cc" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">CC</label>
           <input type="text" id="cc" name="cc" placeholder="CC" value={nuevoUsuario.id} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
+        </div>
 
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/*Rol */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="rol" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Rol</label>
@@ -261,7 +265,9 @@ const Usuarios = () => {
           <label htmlFor="apellidos" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Apellidos</label>
           <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" value={nuevoUsuario.apellidos} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
-
+        </div>
+        
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/*Celular */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="telefono" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Celular</label>
@@ -278,6 +284,7 @@ const Usuarios = () => {
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="direccion" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Dirección</label>
           <input type="text" id="direccion" name="direccion" placeholder="Dirección" value={nuevoUsuario.direccion} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+        </div>
         </div>
 
         {/** Boton */}

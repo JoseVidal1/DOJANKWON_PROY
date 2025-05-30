@@ -209,6 +209,8 @@ const DeleteE=(id)=>{
       
       {/* datos para agregar Estudiantes*/}
       <form className="w-full flex flex-wrap gap-x-6 gap-y-4 mt-10 px-4" onSubmit={handleAgregarEstudiante}>
+
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/* ID */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="id" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">ID</label>
@@ -224,6 +226,9 @@ const DeleteE=(id)=>{
           <label htmlFor="apellido" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">APELLIDO</label>
           <input type="text" name="apellido" placeholder="Apellidos" value={nuevoEst.apellido} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
+        </div>
+
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/* Edad (fecha de nacimiento) */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="edad" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">FECHA NACIMIENTO</label>
@@ -239,6 +244,9 @@ const DeleteE=(id)=>{
           <label htmlFor="direccion" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">DIRECCION</label>
           <input type="text" name="direccion" placeholder="Dirección" value={nuevoEst.direccion} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
+        </div>
+
+        <div className="w-full flex flex-wrap gap-x-6 gap-y-4">
         {/* Telefono */}
         <div className="w-full md:flex-1 flex flex-col min-w-0">
           <label htmlFor="telefono" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">TELEFONO</label>
@@ -259,6 +267,8 @@ const DeleteE=(id)=>{
             ))}
           </select>
         </div>
+        </div>
+        
         <div className="w-full flex justify-center mt-6">
           <button type="submit" className="group relative inline-flex h-11 items-center justify-center overflow-hidden rounded-md px-6 font-medium transition hover:scale-105 duration-300" style={{backgroundColor: "var(--terceary-dark-color)", color: "var(--text-dark-color)"}}>
             <span className="relative z-10">Agregar Estudiante</span>
