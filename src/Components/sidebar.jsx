@@ -67,7 +67,7 @@ const handleLogout = () => {
             <img src={imagen} alt="Logo" className={`transition-all ${expanded ? "w-10" : "w-0"}`} />
             {expanded && (
               <div className="flex flex-col text-center ml-2">
-                <h1 className="text-xl font-bold" style={{ color: "var(--text-dark-color)" }}>Alvaro Vidal M.</h1>
+                <h1 className="text-xl font-bold" style={{ color: "var(--text-dark-color)" }}>DOJANKWON</h1>
                 <h2 className="text-sm font-josefin" style={{ color: "var(--accent-dark-color)" }}>Administrador</h2>
               </div>
             )}
