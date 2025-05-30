@@ -29,9 +29,28 @@ const Pagos = () => {
     return { clasesCSS: 'bg-gray-100 text-gray-800 border-gray-200', textoMostrar: 'Desconocido', icono: '?' };
   };
 
-  const manejarRegistroPago = (nombreUsuario, estadoPago) => {
-    const mensaje = `Registrando pago para ${nombreUsuario} - Estado: ${obtenerConfiguracionEstado(estadoPago).textoMostrar}`;
-    alert(mensaje);
+  const manejarRegistroPago = (datosUsuario) => {
+    fetch('http://localhost:5234/api/Pago', {
+      method:'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datosUsuario),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al registrar el pago');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setListaPagos((prevPagos) => prevPagos.map(pago => pago.id === data.id ? data : pago));
+        alert(`Pago registrado exitosamente para ${datosUsuario.idEstudianteNavigation.nombres}`);
+      })
+      .catch((error) => {
+        console.error('Error al registrar el pago:', error);
+        alert('Error al registrar el pago. Por favor, inténtalo de nuevo.');
+      });
   };
 
   const contarPagosPorEstado = (estadoBuscado) => listaPagos.filter(p => p.estado === estadoBuscado).length;
@@ -73,7 +92,7 @@ const Pagos = () => {
           </div>
           <div className="pt-4 border-t" style={{ borderColor: "var(--terceary-dark-color)" }}>
             {datosUsuario.estado === 'pendiente' ? (
-              <button onClick={() => manejarRegistroPago(datosUsuario.idEstudianteNavigation.nombres, datosUsuario.estado)}
+              <button onClick={() => manejarRegistroPago(datosUsuario)}
                 className="w-full text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2" style={{ backgroundColor: 'var(--terceary-dark-color)' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3d506b')}
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--terceary-dark-color)')}>
