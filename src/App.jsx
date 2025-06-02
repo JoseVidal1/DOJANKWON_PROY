@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Sidebar from './Components/sidebar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion'; // Para animaciones suaves
 
 //import Login from './page/Login';
@@ -48,14 +49,13 @@ function App() {
   </main>
   </div>
   )}
-  {!isAuth && (
-    <Routes>
-      <Route path="/" element={<ProtectedRoute> <Login /> </ProtectedRoute>}>
-      </Route>
-      <Route path="/login" element={<Login />}/>
-      <Route path="*" element={<Error404 />}/>
-    </Routes>
-  )}
+{!isAuth && (
+  <Routes>
+    <Route path="/login" element={<Login />} /> {/* <-- ESTA ES LA QUE FALTABA */}
+    <Route path="/" element={<Navigate to="/login" replace />} />
+    <Route path="*" element={<Error404 />} />
+  </Routes>
+)}
   </BrowserRouter>
   );
 }

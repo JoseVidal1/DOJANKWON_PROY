@@ -4,133 +4,77 @@ import DeleteIcon from '../assets/icons/DeleteIcon.jsx';
 import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 
 const Usuarios = () => {
-  const [usuarios, setUsuarios] = useState([
-    /*{
-      id: '1001',
-      rol: 'Recep',
-      usuario: 'JUANCETO01',
-      nombres: 'Juan',
-      apellidos: 'PEPEFORTUNA',
-      celular: '123',
-      direccion: 'Calle 12444',
-      correo: 'juanceto01@gmail.com',
-    },
-    {
-      id: '1002',
-      rol: 'Admin',
-      usuario: 'MARIACRUZ02',
-      nombres: 'Maria',
-      apellidos: 'Cruz Torres',
-      celular: '3214567890',
-      direccion: 'Carrera 5 #45-60',
-      correo: 'maria.cruz@gmail.com',
-    },
-    {
-      id: '1003',
-      rol: 'Instructor',
-      usuario: 'LUISCAPA03',
-      nombres: 'Luis',
-      apellidos: 'Capablanca',
-      celular: '3129876543',
-      direccion: 'Avenida 8 #12-90',
-      correo: 'luis.capa@gmail.com',
-    },
-    {
-      id: '1004',
-      rol: 'Recep',
-      usuario: 'ANAPEREZ04',
-      nombres: 'Ana',
-      apellidos: 'Pérez Gómez',
-      celular: '3001122334',
-      direccion: 'Calle 10 #20-30',
-      correo: 'ana.perez@gmail.com',
-    },
-    {
-      id: '1005',
-      rol: 'Admin',
-      usuario: 'CARLOSQ05',
-      nombres: 'Carlos',
-      apellidos: 'Quintero Vélez',
-      celular: '3187788990',
-      direccion: 'Transversal 9 #33-77',
-      correo: 'carlosq@gmail.com',
-    },*/
-  ]);
+  const [usuarios, setUsuarios] = useState([]);
   const [usuariosOriginales, setUsuariosOriginales] = useState([]);
   const [busqueda, setBusqueda] = useState('');
-
-
-  useEffect(() => {
-    // Cargar usuarios desde la API al montar el componente
-    fetch('http://localhost:5234/api/Usuario')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al cargar los usuarios');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setUsuarios(data);
-        setUsuariosOriginales(data);
-      })
-      .catch((error) => {
-        console.error('Error al cargar usuarios:', error);
-      });
-  }, []);
-
   const [nuevoUsuario, setNuevoUsuario] = useState({
-    id: '',
+    cc: '',
     rol: '',
-    usuario: '',
-    contrasena: '',
+    userName: '',
+    contraseña: '',
     nombres: '',
     apellidos: '',
     telefono: '',
     direccion: '',
     correo: ''
   });
+  
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [accionActual, setAccionActual] = useState(null);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5234/api/Usuario')
+      .then((response) => {
+        if (!response.ok) throw new Error('Error al cargar los usuarios');
+        return response.json();
+      })
+      .then((data) => {
+        setUsuarios(data);
+        setUsuariosOriginales(data);
+      })
+      .catch((error) => console.error('Error al cargar usuarios:', error));
+  }, []);
+
+  useEffect(() => {
+    const filtrados = usuariosOriginales.filter((u) =>
+      u.cc.toString().includes(busqueda)
+    );
+    setUsuarios(filtrados);
+  }, [busqueda, usuariosOriginales]);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setNuevoUsuario(prev => ({ ...prev, [name]: value }));
+    setNuevoUsuario((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAgregarUsuario = (e) => {
-   e.preventDefault();
-  const form = e.target;
-
-  const nuevoUsuario = {
-    cc: form.cc.value,
-    rol: form.rol.value,
-    userName: form.userName.value,
-    contraseña: form.password.value,
-    nombres: form.nombres.value,
-    apellidos: form.apellidos.value,
-    telefono: form.telefono.value,
-    direccion: form.direccion.value,
-    correo: form.correo.value
-  };
-
-  fetch('http://localhost:5234/api/Usuario', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(nuevoUsuario),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Error al agregar el usuario');
-      }
-      return response.json();
+    e.preventDefault();
+    fetch('http://localhost:5234/api/Usuario', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nuevoUsuario),
     })
-    .then((data) => {
-      console.log('Usuario agregado:', data);
-      setUsuarios((prev) => [...prev, data]);
-      form.reset(); // Limpia el formulario
-    })
-    .catch((error) => {
-      console.error('Error al agregar usuario:', error);
-    });
+      .then((response) => {
+        if (!response.ok) throw new Error('Error al agregar el usuario');
+        return response.json();
+      })
+      .then((data) => {
+        setUsuarios((prev) => [...prev, data]);
+        setUsuariosOriginales((prev) => [...prev, data]);
+        setNuevoUsuario({
+          cc: '',
+          rol: '',
+          userName: '',
+          contraseña: '',
+          nombres: '',
+          apellidos: '',
+          telefono: '',
+          direccion: '',
+          correo: ''
+        });
+      })
+      .catch((error) => console.error('Error al agregar usuario:', error));
   };
 
   const InputCambios = (cc, field, value) => {
@@ -140,55 +84,31 @@ const Usuarios = () => {
   };
 
   const DeleteU = (cc) => {
-    fetch(`http://localhost:5234/api/Usuario/${cc}`, {
-      method: 'DELETE',
-    })
+    fetch(`http://localhost:5234/api/Usuario/${cc}`, { method: 'DELETE' })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+        if (!response.ok) throw new Error(response.statusText);
         setUsuarios((prev) => prev.filter((u) => u.cc !== cc));
+        setUsuariosOriginales((prev) => prev.filter((u) => u.cc !== cc));
       })
-      .catch((error) => {
-        console.error('Error al eliminar usuario:', error);
-      });
+      .catch((error) => console.error('Error al eliminar usuario:', error));
   };
 
   const ActualizarU = (user) => {
-    fetch(`http://localhost:5234/api/Usuario`, {
+    fetch('http://localhost:5234/api/Usuario', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user),
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+        if (!response.ok) throw new Error(response.statusText);
         return response.json();
       })
       .then((data) => {
-        setUsuarios((prev) =>
-          prev.map((u) => (u.cc === user.cc ? data : u))
-        );
+        setUsuarios((prev) => prev.map((u) => (u.cc === user.cc ? data : u)));
+        setUsuariosOriginales((prev) => prev.map((u) => (u.cc === user.cc ? data : u)));
       })
-      .catch((error) => {
-        console.error('Error al actualizar usuario:', error);
-      });
-    };
-    
-      useEffect(() => {
-      const filtrados = usuariosOriginales.filter((u) =>
-      u.cc.toString().includes(busqueda)
-      );
-      setUsuarios(filtrados);
-      }, [busqueda, usuariosOriginales]);
-
-  // Estado para el modal
-  const [modalAbierto, setModalAbierto] = useState(false);
-  const [accionActual, setAccionActual] = useState(null);
-  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+      .catch((error) => console.error('Error al actualizar usuario:', error));
+  };
 
   const manejarAccion = (accion, usuario) => {
     setAccionActual(accion);
@@ -197,7 +117,7 @@ const Usuarios = () => {
   };
 
   const confirmarAccion = () => {
-    if (accionActual === "delete") {
+    if (accionActual === 'delete') {
       DeleteU(usuarioSeleccionado.cc);
     } else {
       ActualizarU(usuarioSeleccionado);
@@ -231,8 +151,8 @@ const Usuarios = () => {
         </div>
         {/* Contraseña */}	
         <div className="w-full md:flex-1 flex flex-col min-w-0">
-          <label htmlFor="password" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Contraseña</label>
-          <input type="password" id="password" name="password" placeholder="Contraseña" value={nuevoUsuario.contrasena} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
+          <label htmlFor="contraseña" className="text-sm font-josefin font-semibold text-[var(--text-dark-color)] uppercase">Contraseña</label>
+          <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" value={nuevoUsuario.contrasena} onChange={handleFormChange} required className="bg-transparent border-b-2 border-[var(--accent-dark-color)] text-white p-1 focus:outline-none focus:border-b-[3px] transition" />
         </div>
 
         {/*CC */}

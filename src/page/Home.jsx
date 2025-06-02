@@ -9,7 +9,7 @@ import UserIcon from '../assets/icons/UserIcon.jsx';
 import PrestamoIcon from '../assets/icons/PrestamoIcon.jsx';
 import P2xl from '../assets/images/HomeBackg/P2xl.png';
 
-const nombre = "ESPANTAVIEJAS3000";
+const nombre = "ALVARO VIDAL";
 
 // breakpoint ESTO ES SOLO PARA EL BACKGROUND
 

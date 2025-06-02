@@ -4,8 +4,8 @@ import { useAuth } from "../Auth/AuthContext"; // Asegúrate de que esta ruta se
 import { Eye, EyeOff, User, Lock, ArrowRight } from "lucide-react";
 
 function Login() {
-  const [email, setEmail] = useState("mail@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [username, setusername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -20,7 +20,7 @@ function Login() {
     setIsLoading(true);
 
     setTimeout(() => {
-      if (email === "mail@gmail.com" && password === "123456") {
+      if (username === "admin" && password === "123") {
         autorizacion.login("token");
         alert("Inicio de Sesión Éxitoso.");
         nav(from, { replace: true });
@@ -70,9 +70,9 @@ function Login() {
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <User className="w-5 h-5 text-[#F44E1C]" />
                 </div>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} onFocus={() => setFocusedField('email')} onBlur={() => setFocusedField(null)}
+                <input type="username" value={username} onChange={(e) => setusername(e.target.value)} onFocus={() => setFocusedField('username')} onBlur={() => setFocusedField(null)}
                   className="w-full pl-12 pr-4 py-4 bg-[color:var(--primary-dark-color)]/60 border border-white/[0.08] rounded-2xl text-[color:var(--text-dark-color)] placeholder-[color:var(--text-dark-color)]/40 focus:outline-none focus:border-[color:var(--accent-dark-color)]/60 focus:bg-[color:var(--primary-dark-color)]/80 transition-all duration-300  text-sm"
-                  placeholder="tu@email.com" required
+                  placeholder="username" required
                 />
               </div>
             </div>
@@ -94,14 +94,14 @@ function Login() {
               </div>
             </div>
 
-            {/* Recordarme */}
+            {/*{/* Recordarme 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center space-x-2 cursor-pointer group">
                 <input type="checkbox" className="w-4 h-4 rounded border-white/20 bg-[color:var(--primary-dark-color)]/60 text-[color:var(--accent-dark-color)] focus:ring-[color:var(--accent-dark-color)]/20 focus:ring-2" />
                 <span className="text-[color:var(--text-dark-color)]/70 group-hover:text-[color:var(--text-dark-color)]/90 transition-colors duration-200">Recordarme</span>
               </label>
               <button className="text-[color:var(--accent-dark-color)] hover:opacity-80 transition-colors duration-200 font-medium">¿Olvidaste tu contraseña?</button>
-            </div>
+            </div> */}
 
             {/* Botón iniciar sesión */}
             <button onClick={handleLogin} disabled={isLoading} 

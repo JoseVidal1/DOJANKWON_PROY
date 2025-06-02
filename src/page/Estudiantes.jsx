@@ -91,6 +91,7 @@ const handleFormChange = (e) => {
     correo: form.correo.value,
     idRango: form.rango.value
   };
+  console.log(nuevoEst);
 
   fetch('http://localhost:5234/api/Estudiante', {
   method: 'POST',
