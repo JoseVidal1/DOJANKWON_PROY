@@ -8,8 +8,13 @@ const Pagos = () => {
   const [estadoFiltro, setEstadoFiltro] = useState('todos');
 
   useEffect(() => {
-    fetch('http://localhost:5234/api/Pago')
-      .then((response) => {
+    fetch('http://localhost:5234/api/Pago',{
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then((response) => {
         if (!response.ok) {
           throw new Error('Error al cargar los pagos');
         }
@@ -25,7 +30,7 @@ const Pagos = () => {
 
   const obtenerConfiguracionEstado = (estadoPago) => {
     if (estadoPago === 'pagado') return { clasesCSS: 'bg-green-100 text-green-800 border-green-200', textoMostrar: 'Pagado', icono: '✓' };
-    if (estadoPago === 'pendiente') return { clasesCSS: 'bg-yellow-100 text-yellow-800 border-yellow-200', textoMostrar: 'Pendiente', icono: '⚠️' };
+    if (estadoPago === 'Pendiente') return { clasesCSS: 'bg-yellow-100 text-yellow-800 border-yellow-200', textoMostrar: 'Pendiente', icono: '⚠️' };
     return { clasesCSS: 'bg-gray-100 text-gray-800 border-gray-200', textoMostrar: 'Desconocido', icono: '?' };
   };
 
@@ -34,6 +39,7 @@ const Pagos = () => {
       method:'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify(datosUsuario),
     })
@@ -91,7 +97,7 @@ const Pagos = () => {
             </span>
           </div>
           <div className="pt-4 border-t" style={{ borderColor: "var(--terceary-dark-color)" }}>
-            {datosUsuario.estado === 'pendiente' ? (
+            {datosUsuario.estado === 'Pendiente' ? (
               <button onClick={() => manejarRegistroPago(datosUsuario)}
                 className="w-full text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2" style={{ backgroundColor: 'var(--terceary-dark-color)' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#3d506b')}
@@ -139,7 +145,7 @@ const Pagos = () => {
         <h2 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-6xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>ESTADOS</h2>
         <div className="grid grid-cols-2 gap-4">
           <TarjetaEstadistica etiqueta="Pagados" cantidad={contarPagosPorEstado('pagado')} colorTexto="text-green-600" />
-          <TarjetaEstadistica etiqueta="Pendientes" cantidad={contarPagosPorEstado('pendiente')} colorTexto="text-yellow-600" />
+          <TarjetaEstadistica etiqueta="Pendientes" cantidad={contarPagosPorEstado('Pendiente')} colorTexto="text-yellow-600" />
         </div>
       </div>
       <hr className="mb-5 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)]" />
@@ -166,7 +172,7 @@ const Pagos = () => {
           >
             <option className="bg-[color:var(--secundary-dark-color)] text-[color:var(--text-dark-color)]" value="todos">Todos los estados</option>
             <option className="bg-[color:var(--secundary-dark-color)] text-[color:var,--text-dark-color)]" value="pagado">Pagado</option>
-            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var,--text-dark-color)]" value="pendiente">Pendiente</option>
+            <option className="bg-[color:var(--secundary-dark-color)] text-[color:var,--text-dark-color)]" value="Pendiente">Pendiente</option>
           </select>
         </div>
 

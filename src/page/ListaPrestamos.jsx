@@ -5,7 +5,13 @@ const ListaPrestamos = () => {
   ]);
 
   useEffect(() => {
-   fetch("http://localhost:5234/api/Prestamo")
+ fetch("http://localhost:5234/api/Prestamo", {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
       .then(response => response.json())
       .then(data => {
         setPrestamos(data);
@@ -18,6 +24,10 @@ const ListaPrestamos = () => {
 const reportarDevolucion = (prestamoId) => {
   fetch(`http://localhost:5234/api/Prestamo/devolver/${prestamoId}`, {
     method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
   })
     .then(response => {
       if (!response.ok) {

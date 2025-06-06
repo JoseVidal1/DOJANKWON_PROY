@@ -24,7 +24,15 @@ const Usuarios = () => {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5234/api/Usuario')
+    fetch('http://localhost:5234/api/Usuario',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Asegúrate de que el token esté almacenado en localStorage
+        }
+      }
+    )
       .then((response) => {
         if (!response.ok) throw new Error('Error al cargar los usuarios');
         return response.json();
@@ -52,7 +60,9 @@ const Usuarios = () => {
     e.preventDefault();
     fetch('http://localhost:5234/api/Usuario', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` //
+       },
       body: JSON.stringify(nuevoUsuario),
     })
       .then((response) => {
@@ -84,7 +94,12 @@ const Usuarios = () => {
   };
 
   const DeleteU = (cc) => {
-    fetch(`http://localhost:5234/api/Usuario/${cc}`, { method: 'DELETE' })
+    fetch(`http://localhost:5234/api/Usuario/${cc}`, { method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` //
+      }
+     })
       .then((response) => {
         if (!response.ok) throw new Error(response.statusText);
         setUsuarios((prev) => prev.filter((u) => u.cc !== cc));
@@ -96,7 +111,9 @@ const Usuarios = () => {
   const ActualizarU = (user) => {
     fetch('http://localhost:5234/api/Usuario', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` //
+       },
       body: JSON.stringify(user),
     })
       .then((response) => {

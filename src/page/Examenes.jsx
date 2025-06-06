@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { DeleteIcon, FileText  } from 'lucide-react';
-import { form, s, tr } from 'framer-motion/client';
+import { form, head, s, tr } from 'framer-motion/client';
 
 const Examenes = () => {
   const [examenes, setExamenes] = useState([]);
@@ -24,7 +24,13 @@ const Examenes = () => {
   const [indiceSugerencia, setIndiceSugerencia] = useState(-1);
   useEffect(() => {
     // Cargar usuarios desde la API al montar el componente
-    fetch('http://localhost:5234/api/Examen')
+    fetch('http://localhost:5234/api/Examen', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al cargar los examenes');
@@ -40,7 +46,15 @@ const Examenes = () => {
   }, []);
   useEffect(() => {
     // Cargar usuarios desde la API al montar el componente
-    fetch('http://localhost:5234/api/Estudiante')
+    fetch('http://localhost:5234/api/Estudiante',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Asegúrate de incluir el token de autenticación
+        }
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al cargar los estudiantes');
@@ -109,7 +123,8 @@ const Examenes = () => {
     fetch('http://localhost:5234/api/Examen', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` //
       },
       body: JSON.stringify(nuevoExamen)
     })
@@ -152,6 +167,10 @@ const Examenes = () => {
   const handleDownload = () => {
     fetch("http://localhost:5234/api/Examen/pdf-examenes", {
       method: "GET",
+      headers: {
+        "Content-Type": "application/pdf",
+        "Authorization": `Bearer ${localStorage.getItem('token')}` //
+      }
     })
       .then((response) => {
         if (!response.ok) {

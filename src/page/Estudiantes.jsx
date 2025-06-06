@@ -7,18 +7,32 @@ import ModalConfirmacion from "../Components/ModalConfirmation.jsx";
 const Estudiante = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [rangos, setRangos] = useState([]);
-  useEffect(() => {
-    fetch('http://localhost:5234/api/Rango')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al cargar los rangos');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setRangos(data);
-      })
-  }, []);
+useEffect(() => {
+  fetch('http://localhost:5234/api/Rango', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Error al cargar los rangos');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setRangos(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <div className="text-white p-10">No autorizado</div>;
+  }
+
   const [modalOpen, setModalOpen] = useState(false);
   const [accion, setAccion] = useState('');
   const [seleccionado, setSeleccionado] = useState(null);
@@ -37,7 +51,15 @@ const Estudiante = () => {
   });
 useEffect(() => {
     // Cargar usuarios desde la API al montar el componente
-    fetch('http://localhost:5234/api/Estudiante')
+    fetch('http://localhost:5234/api/Estudiante',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // <-- Agregar token de autorización
+        }
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al cargar los usuarios');
@@ -97,6 +119,7 @@ const handleFormChange = (e) => {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}` // <-- Agregar token de autorización
   },
   body: JSON.stringify(nuevoEst),
 })
@@ -148,6 +171,10 @@ const handleFormChange = (e) => {
 const DeleteE=(id)=>{
   fetch(`http://localhost:5234/api/Estudiante/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // <-- Agregar token de autorización 
+      }
     })
       .then((response) => {
         if (!response.ok) {
@@ -164,6 +191,7 @@ const DeleteE=(id)=>{
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // <-- Agregar token de autorización
     },
     body: JSON.stringify(estudiante),
   })
@@ -316,6 +344,7 @@ const DeleteE=(id)=>{
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Correo</th>
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Grupo</th>
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Rango</th>
+              <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Estado</th>              
               <th className="p-3 text-sm font-semibold tracking-wide" style={{ color: "var(--text-dark-color" }}>Acciones</th>
             </tr>
           </thead>
@@ -334,6 +363,7 @@ const DeleteE=(id)=>{
                 ))}
                 <td className="p-2">{est.idGrupoNavigation.nombre}</td> 
                 <td className="p-2">{est.idRangoNavigation.nombre}</td>
+                <td className="p-2">{est.estado}</td>
                 <td className="p-3 flex justify-center space-x-2">
                   <button onClick={() => manejarAccion("edit", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Editar"><EditIcon className="w-5 h-5" /></button>
                   <button onClick={() => manejarAccion("delete", est)} className="p-1 text-sm bg-gray-700 rounded hover:bg-gray-900" title="Eliminar"><DeleteIcon className="w-5 h-5" /></button>

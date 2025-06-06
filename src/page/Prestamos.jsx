@@ -16,7 +16,15 @@ const Prestamos = () => {
   // Cargar estudiantes desde API
   const [estudiantes, setEstudiantes] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:5234/api/Estudiante')
+    fetch('http://localhost:5234/api/Estudiante',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Asegúrate de que el token esté configurado correctamente
+        }
+      }
+    )
       .then((response) => {
         if (!response.ok) throw new Error('Error al cargar los estudiantes');
         return response.json();
@@ -36,7 +44,15 @@ const Prestamos = () => {
     id: prod.id
     }));
     useEffect(() => {
-      fetch('http://localhost:5234/api/Articulo')
+      fetch('http://localhost:5234/api/Articulo',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` //
+          }
+        }
+      )
         .then((response) => {
           if (!response.ok) throw new Error('Error al cargar los artículos');
           return response.json();
@@ -173,7 +189,8 @@ const RegistrarPrestamo = () => {
   fetch('http://localhost:5234/api/Prestamo', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}` //
     },
     body: JSON.stringify( nuevoPrestamo ) // 👈 Esto depende de tu backend
   })

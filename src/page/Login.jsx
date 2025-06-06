@@ -15,21 +15,34 @@ function Login() {
   const autorizacion = useAuth();
   const from = location.state?.from?.pathname || "/";
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    setTimeout(() => {
-      if (username === "admin" && password === "123") {
-        autorizacion.login("token");
-        alert("Inicio de Sesión Éxitoso.");
-        nav(from, { replace: true });
-      } else {
-        alert("Credenciales Inválidas.");
-      }
-      setIsLoading(false);
-    }, 1500);
-  };
+  try {
+    const response = await fetch("http://localhost:5234/api/Usuario/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!response.ok) {
+      throw new Error("Credenciales inválidas");
+    }
+
+    const data = await response.json();
+    const token = data.token;
+
+    autorizacion.login(token); // guarda token en el contexto
+    alert("Inicio de Sesión Éxitoso.");
+    nav(from, { replace: true });
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden p-4">

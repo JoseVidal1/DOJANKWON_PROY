@@ -23,7 +23,15 @@ const Inventario = () => {
   };
   useEffect(() => {
     // Cargar usuarios desde la API al montar el componente
-    fetch('http://localhost:5234/api/Articulo')
+    fetch('http://localhost:5234/api/Articulo',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Agregar token de autenticación
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(response.text() || 'Error al cargar articulos');
@@ -49,6 +57,7 @@ const Inventario = () => {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Agregar token de autenticación
   },
   body: JSON.stringify(nuevoProducto), 
 })
@@ -81,6 +90,7 @@ const Inventario = () => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then(async (response) => {
