@@ -32,6 +32,18 @@ const handleLogin = async (e) => {
     }
 
     const data = await response.json();
+    const nombres = data.nombres;
+    const apellidos = data.apellidos;
+    const correo = data.correo; 
+    const rol = data.rol;
+    localStorage.removeItem("rol");
+    localStorage.setItem("rol", rol); // Guarda el rol en localStorage
+    localStorage.removeItem("nombres");
+    localStorage.removeItem("apellidos");
+    localStorage.removeItem("correo");
+    localStorage.setItem("nombres", nombres);
+    localStorage.setItem("apellidos", apellidos);
+    localStorage.setItem("correo", correo || ""); // Asegúrate de que 'correo' esté definido en la respuesta
     const token = data.token;
 
     autorizacion.login(token); // guarda token en el contexto

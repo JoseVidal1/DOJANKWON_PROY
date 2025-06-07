@@ -68,7 +68,7 @@ const handleLogout = () => {
             {expanded && (
               <div className="flex flex-col text-center ml-2">
                 <h1 className="text-xl font-bold" style={{ color: "var(--text-dark-color)" }}>DOJANKWON</h1>
-                <h2 className="text-sm font-josefin" style={{ color: "var(--accent-dark-color)" }}>Administrador</h2>
+                <h2 className="text-sm font-josefin" style={{ color: "var(--accent-dark-color)" }}>{localStorage.getItem("rol")}</h2>
               </div>
             )}
             <button onClick={() => setExpanded((curr) => !curr)} className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--terceary-dark-color)" }}>
@@ -120,8 +120,8 @@ const handleLogout = () => {
             <div className={`overflow-hidden transition-all duration-300 ${expanded ? "w-52 ml-3" : "w-0"}`}>
               <div className="flex items-center justify-between leading-4">
                 <div>
-                  <h4 className="font-semibold" style={{ color: "#e8d8c9" }}>Alvaro Vidal Martinez</h4>
-                  <span className="text-xs" style={{ color: "var(--accent-dark-color)" }}>AvidalMartinez@gmail.com</span>
+                  <h4 className="font-semibold" style={{ color: "#e8d8c9" }}>{localStorage.getItem("nombres")+" "+localStorage.getItem("apellidos")}</h4>
+                  <span className="text-xs" style={{ color: "var(--accent-dark-color)" }}>{localStorage.getItem("correo")}</span>
                 </div>
                  <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={isMenuOpen} className="focus:outline-none">
                   <MoreVertical size={20} className="ml-2 shrink-0 text-accent-dark hover:text-accent transition-colors duration-200" style={{ color: "var(--accent-dark-color)" }}/>

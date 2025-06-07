@@ -9,9 +9,7 @@ import UserIcon from '../assets/icons/UserIcon.jsx';
 import PrestamoIcon from '../assets/icons/PrestamoIcon.jsx';
 import P2xl from '../assets/images/HomeBackg/P2xl.png';
 
-const nombre = "ALVARO VIDAL";
 
-// breakpoint ESTO ES SOLO PARA EL BACKGROUND
 
 
 const Home = () => {
@@ -21,7 +19,7 @@ const Home = () => {
       {/*Presentacion*/}
       <hr className="relative top-1 left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)] z-30" />
       <h1 className='text-sm font-bold ml-2  font-josefin' style={{ color: "var(--accent-dark-color)" }}>INICIO</h1>
-      <h1 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-7xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>BIENVENIDO <span style={{ color: "var(--accent-dark-color)" }}>{nombre}</span></h1>
+      <h1 className="text-2xl sm:text-4xl ml-1 md:text-5xl lg:text-7xl font-josefin mb-2 font-medium text-left" style={{ color: "var(--text-dark-color)" }}>BIENVENIDO <span style={{ color: "var(--accent-dark-color)" }}>{(localStorage.getItem("nombres") + " " + localStorage.getItem("apellidos")).toUpperCase()}</span></h1>
       <hr className="w-[calc(100%+140px)] mx-[-70px] border-t border-[color:var(--secundary-dark-color)] mb-6 z-30" />
       <hr className="absolute left-[-70px] right-[-70px] border-t border-[color:var(--secundary-dark-color)] z-30" />
       <p className='ml-2 font-josefin'>Bienvenido al sistema de gestión académica. <br />Administra todos los módulos de forma <span style={{ color: "var(--accent-dark-color)" }}>intuitiva</span>, accede a la información <span style={{ color: "var(--accent-dark-color)" }}>en tiempo real</span> y mantén todos los datos <span style={{ color: "var(--accent-dark-color)" }}>organizados</span> desde un solo lugar.</p>
